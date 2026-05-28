@@ -18,9 +18,11 @@
 
 /// ========= BOOK CONTENT START ========= ///
 
+#chapter.pre-title()
+#chapter.title()
 #chapter.frontmatter()
 
-= #title()
+= #title() <start_count>
 
 #line(length: 100%)
 

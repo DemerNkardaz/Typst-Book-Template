@@ -72,15 +72,29 @@
       inside: get("page.margin.inside"),
       outside: get("page.margin.outside"),
     ),
-    footer: context [
-      #set align(center)
-      #set text(8pt)
-      #counter(page).display(
-        "1 | 1",
-        both: true,
-      )
-    ],
   )
+
+	set page(
+		footer: context {
+			let start-nodes = query(selector(<start_count>))
+
+			if start-nodes.len() > 0 {
+				let start-page = start-nodes.first().location().page()
+				let current-page = here().page()
+
+				if current-page >= start-page {
+					let p = counter(page).get().first()
+					let total = counter(page).final().first()
+
+					align(center, text(8pt, [
+						#numbering("1", p) | #numbering("1", total)
+					]))
+				} else {
+					none
+				}
+			}
+		}
+	)
 
   body
 }

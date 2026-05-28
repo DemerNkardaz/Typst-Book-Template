@@ -2,6 +2,8 @@ author: Иван Иванов
 title: Моя книга
 description: Моя афигенная книга
 version: 1.0.0
+publisher: Издательство
+publisher-origin: Москва
 date:
   year: 2026
   month: 11
