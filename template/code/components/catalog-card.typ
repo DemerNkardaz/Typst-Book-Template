@@ -1,25 +1,267 @@
-#let new(title, author, year: none, note: none, style: none) = [
-  #rect(
-    width: 100%,
+#import "../utils/main.typ": parse-value
+
+────────────────────────────────────────────────────────
+
+#let _parse-dict(dict) = {
+  let result = (:)
+  for (k, v) in dict {
+    result.insert(k, if type(v) == dictionary {
+      _parse-dict(v)
+    } else {
+      parse-value(v)
+    })
+  }
+  result
+}
+
+#let _parse-track(track) = {
+  if type(track) == int {
+    (auto,) * track
+  } else if type(track) == array {
+    track.map(entry => {
+      if type(entry) == dictionary {
+        let val = entry.at("width", default: entry.at("height", default: "auto"))
+        parse-value(if type(val) == str { val } else { repr(val) })
+      } else {
+        parse-value(if type(entry) == str { entry } else { repr(entry) })
+      }
+    })
+  } else {
+    track
+  }
+}
+
+#let _apply-item-style(item-style, body) = {
+  if type(item-style) != dictionary {
+    return body
+  }
+
+  if "text" in item-style {
+    let td = _parse-dict(item-style.text)
+    body = { set text(..td); body }
+  }
+
+  if "paragraph" in item-style {
+    let pd = _parse-dict(item-style.paragraph)
+    body = { set par(..pd); body }
+  }
+
+  body
+}
+
+#let _wrap-margin(item, body) = {
+  let m = if "margin" in item { item.margin } else { (:) }
+  let top    = if "top"    in m { parse-value(str(m.top))    } else { none }
+  let bottom = if "bottom" in m { parse-value(str(m.bottom)) } else { none }
+
+  if top    != none { body = { v(top);    body } }
+  if bottom != none { body = { body; v(bottom) } }
+  body
+}
+
+#let _build-table-item(ti, fields) = {
+  if "field" in ti {
+    let val = fields.at(ti.field, default: "")
+    [#val]
+  } else if "text" in ti {
+    [#(ti.text)]
+  } else {
+    []
+  }
+}
+
+#let _build-table-box(item, fields) = {
+  let td      = item.table
+  let tw      = if "table-width" in td { parse-value(td.table-width) } else { 100% }
+  let rows    = if "rows"    in td { td.rows    } else { auto }
+  let cols-v  = if "columns" in td { td.columns } else { auto }
+
+	let tbl-props = (:)
+  if "table-style" in td {
+    for (k, v) in td.table-style {
+      let parsed = if type(v) == array {
+        v.map(el => parse-value(if type(el) == str { el } else { repr(el) }))
+      } else if type(v) == str {
+        parse-value(v)
+      } else {
+        v
+      }
+      tbl-props.insert(k, parsed)
+    }
+  }
+
+  if "columns" not in tbl-props {
+    tbl-props.insert("columns", cols-v)
+  }
+  if "rows" not in tbl-props {
+    tbl-props.insert("rows", rows)
+  }
+
+  let cell-text-props = (:)
+  if "table-cell-style" in td {
+    for (k, v) in td.table-cell-style {
+      let parsed = if type(v) == array {
+        v.map(el => parse-value(if type(el) == str { el } else { repr(el) }))
+      } else if type(v) == str {
+        parse-value(v)
+      } else {
+        v
+      }
+      cell-text-props.insert(k, parsed)
+    }
+  }
+
+  let items = if "table-items" in td { td.table-items } else { () }
+
+  let n-rows = if "rows" in tbl-props { tbl-props.rows } else { 1 }
+  let n-cols = {
+    let c = tbl-props.columns
+    if type(c) == array { c.len() }
+    else if type(c) == int { c }
+    else { 1 }
+  }
+
+  let cells = range(n-rows * n-cols).map(_ => [])
+  for ti in items {
+    let r = (ti.at("row", default: 1)) - 1
+    let c = (ti.at("col", default: 1)) - 1
+    let idx = r * n-cols + c
+    if idx >= 0 and idx < cells.len() {
+      cells.at(idx) = _build-table-item(ti, fields)
+    }
+  }
+
+  let final-cells = if cell-text-props.len() > 0 {
+    cells.map(cell => { set text(..cell-text-props); cell })
+  } else {
+    cells
+  }
+
+  box(width: tw, table(..tbl-props, ..final-cells))
+}
+
+────────────────────────────────────────────────────────────
+
+#let _build-grid(config, fields) = {
+  let items = config.at("grid-items", default: ())
+
+  let grid-props = (:)
+  if "grid-style" in config {
+    for (k, v) in config.grid-style {
+      let parsed = if type(v) == array {
+        v.map(el => parse-value(if type(el) == str { el } else { repr(el) }))
+      } else if type(v) == str {
+        parse-value(v)
+      } else {
+        v
+      }
+      grid-props.insert(k, parsed)
+    }
+  }
+
+  let col-count = {
+    let c = grid-props.at("columns", default: 1)
+    if type(c) == array { c.len() } else if type(c) == int { c } else { 1 }
+  }
+  let row-count = {
+    let r = grid-props.at("rows", default: 1)
+    if type(r) == array { r.len() } else if type(r) == int { r } else { 1 }
+  }
+
+  let cells = (:)
+
+  for item in items {
+    let r = item.at("row", default: 1)
+    let c = item.at("col", default: 1)
+    let key = str(r) + "," + str(c)
+
+    let content = if "field" in item {
+      let val = fields.at(item.field, default: "")
+      [#val]
+    } else if "text" in item {
+      [#(item.text)]
+    } else if "table" in item {
+      _build-table-box(item, fields)
+    } else {
+      []
+    }
+
+    if "style" in item {
+      content = _apply-item-style(item.style, content)
+    }
+
+    content = _wrap-margin(item, content)
+
+    if key in cells {
+      cells.insert(key, cells.at(key) + parbreak() + content)
+    } else {
+      cells.insert(key, content)
+    }
+  }
+
+  let grid-cells = range(row-count).map(ri => {
+    range(col-count).map(ci => {
+      let key = str(ri + 1) + "," + str(ci + 1)
+      block(cells.at(key, default: []))
+    })
+  }).join()
+
+  grid(..grid-props, ..grid-cells)
+}
+
+───────────────────────────────────────────────────────────
+
+#let new(name, fields) = {
+	let path = if name == "" {
+    "../../style/catalog-card.yml"
+  } else {
+    "../../style/catalog-card [" + name + "].yml"
+  }
+
+  let config = yaml(path)
+  let uses = config.at("uses-style", default: (:))
+
+  let par-name  = uses.at("paragraph", default: none)
+  let text-name = uses.at("text",      default: none)
+
+  let rect-defaults = (
+    width:  100%,
     height: auto,
-    stroke: 0.5pt,
-    radius: 2pt,
-    inset: 12pt,
-    [
-      #text(size: 11pt, weight: "bold")[#title] \
-      #text(size: 9pt)[by #author]
-
-      #if year != none [
-        #text(size: 8pt)[Year: #year]
-      ]
-
-      #v(4pt)
-
-      #if note != none [
-        #text(size: 8pt)[#note]
-      ]
-
-      #v(6pt)
-    ]
   )
-]
+  let rect-overrides = if "style" in config {
+    _parse-dict(config.style)
+  } else {
+    (:)
+  }
+  let rect-props = rect-defaults + rect-overrides
+
+  let card-type = config.at("type", default: "grid")
+
+  let inner = if card-type == "grid" {
+    _build-grid(config, fields)
+  } else {
+    [Неизвестный тип карточки: #card-type]
+  }
+
+  if text-name != none {
+    let text-path = if text-name == "" {
+      "../../style/text.yml"
+    } else {
+      "../../style/text [" + text-name + "].yml"
+    }
+    let td = _parse-dict(yaml(text-path))
+    inner = { set text(..td); inner }
+  }
+
+  if par-name != none {
+    let par-path = if par-name == "" {
+      "../../style/paragraph.yml"
+    } else {
+      "../../style/paragraph [" + par-name + "].yml"
+    }
+    let pd = _parse-dict(yaml(par-path))
+    inner = { set par(..pd); inner }
+  }
+
+  box(..rect-props, inner)
+}

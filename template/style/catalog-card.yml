@@ -1,12 +1,76 @@
-width: 100%
-height: auto
-stroke: 0.5pt
-radius: 2pt
-inset: 12pt
+fields:
+  - author
+  - title
+  - description
+  - ISBN
+  - Авторский знак
+  - УДК
+  - ББК
 
-content:
-  title:
-    size: 11pt
-    weight: bold
-  author:
-    size: 9pt
+type: grid
+grid-style:
+  columns: 2
+  rows: 3
+  row-gutter: 10pt
+  column-gutter: 5pt
+  stroke: rgb("#000000")
+grid-items:
+  - field: author
+    row: 1
+    col: 2
+    style:
+      text:
+        weight: bold
+  - field: title
+    row: 2
+    col: 2
+  - field: description
+    row: 3
+    col: 2
+  - field: ISBN
+    row: 3
+    col: 2
+    margin:
+      top: 4pt
+      bottom: 4pt
+  - field: Авторский знак
+    row: 2
+    col: 1
+    style:
+      text:
+        weight: bold
+  - table:
+      table-width: 100%
+      table-cell-style:
+        size: 8pt
+      table-style:
+        columns: [40%, auto]
+        rows: 2
+        align: [right, left]
+        inset: 4pt
+      table-items:
+        - text: УДК
+          row: 2
+          col: 1
+        - text: ББК
+          row: 1
+          col: 1
+        - field: УДК
+          row: 2
+          col: 2
+        - field: ББК
+          row: 1
+          col: 2
+    row: 3
+    col: 2
+
+uses-style:
+  paragraph: ""
+  text: ""
+
+style:
+  width: 100%
+  height: auto
+  stroke: 0.5pt
+  radius: 2pt
+  inset: 12pt

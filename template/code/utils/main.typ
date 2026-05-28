@@ -78,18 +78,15 @@
     )
   }
 
-  // функции цвета
   let color-match = value.match(regex(regex-rules.color-fn))
   if color-match != none {
     return _parse-color(color-match.captures.at(0), color-match.captures.at(1))
   }
 
-  // auto, none
-  if value.match(regex("^(auto|none)$")) != none {
+  if value.match(regex("^(auto|none|start|end|left|center|right|top|horizon|bottom)$")) != none {
     return eval(value)
   }
 
-  // числа с единицами или операторами
   let starts-with-number = value.match(regex("^-?\\d")) != none
   let has-units = value.match(regex("\\d+(pt|mm|cm|in|em|%|deg|rad|fr)")) != none
   let has-operators = value.match(regex("\\s[+\\-*/]\\s")) != none

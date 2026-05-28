@@ -21,13 +21,27 @@
 = #title()
 
 #line(length: 100%)
+#box(
+  width: 100%,
+  table(
+    columns: (80pt, 1fr, 120pt),
 
-#catalog-card.new(
-  meta.get("title"),
-  meta.get("author"),
-  year: meta.get("date").year,
-  note: meta.get("description"),
+    [ID], [Описание], [Статус],
+
+    [1], [Длинный текст], [OK],
+    [2], [Коротко], [FAIL],
+  )
 )
+
+#catalog-card.new("", (
+	"author":         meta.get("author"),
+	"title":          meta.property("Аннотация").at(0),
+	"description":    meta.property("Аннотация").at(1),
+	"ISBN":           meta.property("ISBN"),
+	"Авторский знак": meta.property("Библиографическая информация").at("Авторский знак"),
+	"ББК":           meta.property("Библиографическая информация").at("ББК"),
+	"УДК":           meta.property("Библиографическая информация").at("УДК"),
+))
 
 #chapter.read(
 	"Chapter Name",

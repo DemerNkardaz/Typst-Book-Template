@@ -1,4 +1,3 @@
-font: Playfair Display
 size: 10pt
 hyphenate: auto
 overhang: true
@@ -12,7 +11,7 @@ historical-ligatures: true
 kerning: true
 number-type: lining
 number-width: tabular
-top-edge: x-height
-bottom-edge: baseline
+top-edge: cap-height
+bottom-edge: descender
 
 fill: cmyk(0%, 0%, 0%, 95%)
