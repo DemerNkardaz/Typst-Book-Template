@@ -1,5 +1,6 @@
 #import "./code/plugin/index.typ": *
 #import "./code/package/index.typ": *
+#import "./code/components/index.typ": *
 
 #show: layout.init
 #show: style.use-par
@@ -21,9 +22,16 @@
 
 #line(length: 100%)
 
+#catalog-card.new(
+  meta.get("title"),
+  meta.get("author"),
+  year: meta.get("date").year,
+  note: meta.get("description"),
+)
+
 #chapter.read(
-	1, "Chapter Name",
-	2, "Chapter Name",
+	"Chapter Name",
+	"Chapter Name",
 )
 
 /// ========= BOOK CONTENT END ========= ///

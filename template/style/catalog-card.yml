@@ -1,0 +1,12 @@
+width: 100%
+height: auto
+stroke: 0.5pt
+radius: 2pt
+inset: 12pt
+
+content:
+  title:
+    size: 11pt
+    weight: bold
+  author:
+    size: 9pt
