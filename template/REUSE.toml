@@ -1,1 +1,11 @@
 version = 1
+
+# This is a placeholder assets.
+# Replace it with your own assets and update the annotations.
+[[annotations]]
+    path = [
+        "/assets/logo-series.svg"
+    ]
+    precedence = "override"
+    SPDX-FileCopyrightText = "2026 Ялла Нкардаз"
+    SPDX-License-Identifier = "CC-BY-NC-ND-4.0"
