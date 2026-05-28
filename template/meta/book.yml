@@ -1,0 +1,12 @@
+author: Иван Иванов
+title: Моя книга
+description: Моя афигенная книга
+version: 1.0.0
+date:
+  year: 2026
+  month: 11
+  day: 11
+keywords:
+  - Книга
+language[ISO-639]: ru
+language: Русский

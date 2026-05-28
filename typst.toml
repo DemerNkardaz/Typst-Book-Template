@@ -1,0 +1,29 @@
+[package]
+name = "yn-book-template"
+version = "0.1.0"
+entrypoint = "lib.typ"
+authors = ["Yalla Nkardaz <https://github.com/DemerNkardaz>"]
+license = "MIT"
+description = "A book project template"
+repository = "https://github.com/DemerNkardaz/Typst-Book-Template"
+exclude = [
+	".git",
+	".github",
+	".gitignore",
+	".gitattributes",
+	".vscode",
+	".idea",
+	".hintrc",
+	"TODO.md",
+	"LICENSES"
+]
+keywords = ["book", "template"]
+categories = [
+	"book",
+	"layout",
+]
+
+
+[template]
+path = "template"
+entrypoint = "main.typ"

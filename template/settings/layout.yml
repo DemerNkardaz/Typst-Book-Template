@@ -1,0 +1,22 @@
+mode: default
+
+meta:
+  format:
+    size: 70×108
+    fraction: 1/16
+
+default:
+  page:
+    # https://typst.app/docs/reference/layout/page/#parameters-paper
+    # “custom” for customizable width and height or paper variant from link above
+    paper: custom
+    size: 170 × 260 in mm
+    # or (width: 170mm, height: 260mm)
+    margin: 21mm
+    # or “top”, “bottom”, “inside” and “outside” inside the “margin” key
+
+print:
+  page:
+    margin:
+      inside: 16mm
+      outside: 26mm
