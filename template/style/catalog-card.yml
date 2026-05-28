@@ -9,11 +9,11 @@ fields:
 
 type: grid
 grid-style:
-  columns: 2
+  columns: [7.5mm, auto]
   rows: 3
   row-gutter: 10pt
   column-gutter: 5pt
-  stroke: rgb("#000000")
+  # stroke: rgb("#000000")
 grid-items:
   - field: author
     row: 1
@@ -24,12 +24,29 @@ grid-items:
   - field: title
     row: 2
     col: 2
-  - field: description
-    row: 3
-    col: 2
+    style:
+      paragraph:
+        first-line-indent:
+          amount: 5mm
+          all: true
+      text:
+        size: 9pt
   - field: ISBN
     row: 3
     col: 2
+    style:
+      paragraph:
+        first-line-indent:
+          amount: 5mm
+          all: true
+      text:
+        size: 8pt
+  - field: description
+    row: 3
+    col: 2
+    style:
+      text:
+        size: 8pt
     margin:
       top: 4pt
       bottom: 4pt
@@ -38,28 +55,31 @@ grid-items:
     col: 1
     style:
       text:
+        size: 9pt
         weight: bold
   - table:
       table-width: 100%
       table-cell-style:
         size: 8pt
+        weight: bold
       table-style:
-        columns: [40%, auto]
+        columns: [5fr, 1fr]
         rows: 2
-        align: [right, left]
+        align: right
         inset: 4pt
+        stroke: none
       table-items:
         - text: УДК
-          row: 2
+          row: 1
           col: 1
         - text: ББК
-          row: 1
+          row: 2
           col: 1
         - field: УДК
-          row: 2
+          row: 1
           col: 2
         - field: ББК
-          row: 1
+          row: 2
           col: 2
     row: 3
     col: 2
@@ -71,6 +91,6 @@ uses-style:
 style:
   width: 100%
   height: auto
-  stroke: 0.5pt
+  stroke: none
   radius: 2pt
   inset: 12pt

@@ -21,17 +21,6 @@
 = #title()
 
 #line(length: 100%)
-#box(
-  width: 100%,
-  table(
-    columns: (80pt, 1fr, 120pt),
-
-    [ID], [Описание], [Статус],
-
-    [1], [Длинный текст], [OK],
-    [2], [Коротко], [FAIL],
-  )
-)
 
 #catalog-card.new("", (
 	"author":         meta.get("author"),

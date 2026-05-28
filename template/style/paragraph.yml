@@ -12,4 +12,4 @@ first-line-indent:
   amount: 5mm
   all: false
 hanging-indent: 0pt
-linebreaks: "optimized"
+linebreaks: optimized

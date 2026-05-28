@@ -49,6 +49,37 @@
   body
 }
 
+#let _apply-use-style(use-style, body) = {
+  if type(use-style) != dictionary {
+    return body
+  }
+
+  let par-name  = use-style.at("paragraph", default: none)
+  let text-name = use-style.at("text",      default: none)
+
+  if text-name != none {
+    let text-path = if text-name == "" {
+      "../../style/text.yml"
+    } else {
+      "../../style/text [" + text-name + "].yml"
+    }
+    let td = _parse-dict(yaml(text-path))
+    body = { set text(..td); body }
+  }
+
+  if par-name != none {
+    let par-path = if par-name == "" {
+      "../../style/paragraph.yml"
+    } else {
+      "../../style/paragraph [" + par-name + "].yml"
+    }
+    let pd = _parse-dict(yaml(par-path))
+    body = { set par(..pd); body }
+  }
+
+  body
+}
+
 #let _wrap-margin(item, body) = {
   let m = if "margin" in item { item.margin } else { (:) }
   let top    = if "top"    in m { parse-value(str(m.top))    } else { none }
@@ -137,7 +168,7 @@
     cells
   }
 
-  box(width: tw, table(..tbl-props, ..final-cells))
+  block(width: tw, table(..tbl-props, ..final-cells))
 }
 
 ────────────────────────────────────────────────────────────
@@ -188,6 +219,10 @@
 
     if "style" in item {
       content = _apply-item-style(item.style, content)
+    }
+
+    if "use-style" in item {
+      content = _apply-use-style(item.at("use-style"), content)
     }
 
     content = _wrap-margin(item, content)
