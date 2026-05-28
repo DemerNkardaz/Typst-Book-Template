@@ -3,9 +3,14 @@
 #table(
 	columns: (auto, auto),
 	stroke: none,
-	[#text(weight: 700)[УДК]], [#text(weight: 700)[#meta.property("Библиографическая информация").at("УДК")]],
-	[#text(weight: 700)[ББК]], [#text(weight: 700)[#meta.property("Библиографическая информация").at("ББК")]],
-	[], [#text(weight: 700)[#meta.property("Библиографическая информация").at("Авторский знак")]]
+	[#text(weight: 700)[УДК]],
+	[#text(weight: 700)[#meta.property("Библиографическая информация.ББК")]],
+
+	[#text(weight: 700)[ББК]],
+	[#text(weight: 700)[#meta.property("Библиографическая информация.УДК")]],
+
+	[],
+	[#text(weight: 700)[#meta.property("Библиографическая информация.Авторский знак")]]
 )
 
 #catalog-card.new(name: "", (
@@ -13,9 +18,9 @@
 	"title":          meta.property("Бибилографическое описание").at(0),
 	"description":    meta.property("Аннотация").at(0),
 	"ISBN":           meta.property("ISBN"),
-	"Авторский знак": meta.property("Библиографическая информация").at("Авторский знак"),
-	"ББК":           meta.property("Библиографическая информация").at("ББК"),
-	"УДК":           meta.property("Библиографическая информация").at("УДК"),
+	"Авторский знак": meta.property("Библиографическая информация.Авторский знак"),
+	"ББК":            meta.property("Библиографическая информация.ББК"),
+	"УДК":            meta.property("Библиографическая информация.УДК"),
 ))
 
 #place(
@@ -33,7 +38,7 @@
 				stroke: none,
 
 				[#meta.property("ISBN")],
-				[#sym.copyright #meta.get("author"), #meta.get("date").year]
+				[#sym.copyright #meta.get("author"), #meta.get("date.year")]
 			)
 		]
 	]

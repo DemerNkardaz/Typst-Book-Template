@@ -122,22 +122,15 @@
   parse-value(content)
 }
 
-#let include-with-context(items, ..scopeContext) = {
-  let scope = scopeContext.named()
-
-  let item-list = if type(items) == array {
-    items
-  } else {
-    (items,)
-  }
-
-  for item in item-list {
-    if type(item) == str {
-      eval(read(item), mode: "markup", scope: scope)
-    } else if type(item) == function {
-      item()
+#let resolve-path(dict, key-path) = {
+  let parts = key-path.split(".")
+  let node = dict
+  for part in parts {
+    if type(node) == dictionary and part in node {
+      node = node.at(part)
     } else {
-      item
+      return none
     }
   }
+  node
 }
