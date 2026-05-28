@@ -1,38 +1,50 @@
-// code/plugin/no-break/main.typ
-
 #let data = yaml("../../../settings/nobreak.yml")
 
 #let _options = data.at("options", default: (:))
 #let _words = data.at("words", default: ())
 
+#let _escape(word) = {
+  word
+    .replace("\\", "\\\\")
+    .replace(".", "\\.")
+    .replace("+", "\\+")
+    .replace("?", "\\?")
+    .replace("(", "\\(")
+    .replace(")", "\\)")
+    .replace("[", "\\[")
+    .replace("]", "\\]")
+    .replace("{", "\\{")
+    .replace("}", "\\}")
+    .replace("^", "\\^")
+    .replace("$", "\\$")
+    .replace("|", "\\|")
+}
+
+#let _word-to-pattern(word) = {
+  let prefix-wild = word.starts-with("*")
+  let suffix-wild = word.ends-with("*")
+
+  let core = word
+  if prefix-wild { core = core.slice(1) }
+  if suffix-wild { core = core.slice(0, core.len() - 1) }
+
+  let escaped = _escape(core)
+
+  let pre  = if prefix-wild { "\\w*" } else { "\\b" }
+  let post = if suffix-wild { "\\w*" } else { "\\b" }
+
+  pre + escaped + post
+}
+
 #let _create-rule(words, options) = {
   if words.len() == 0 { return none }
 
   let case-sensitive = options.at("case-sensitive", default: false)
-  let partial-match = options.at("partial-match", default: true)
-
-  let escaped = words.map(word => {
-    word
-      .replace("\\", "\\\\")
-      .replace(".", "\\.")
-      .replace("*", "\\*")
-      .replace("+", "\\+")
-      .replace("?", "\\?")
-      .replace("(", "\\(")
-      .replace(")", "\\)")
-      .replace("[", "\\[")
-      .replace("]", "\\]")
-      .replace("{", "\\{")
-      .replace("}", "\\}")
-      .replace("^", "\\^")
-      .replace("$", "\\$")
-      .replace("|", "\\|")
-  })
-
   let case-flag = if case-sensitive { "" } else { "(?i)" }
-  let suffix = if partial-match { "\\w*" } else { "" }
 
-  regex(case-flag + "\\b(" + escaped.join("|") + ")" + suffix)
+  let patterns = words.map(w => _word-to-pattern(str(w)))
+
+  regex(case-flag + "(" + patterns.join("|") + ")")
 }
 
 #let _pattern = _create-rule(_words, _options)

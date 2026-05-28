@@ -1,6 +1,6 @@
+# Note: use “*” for a wildcard match
 options:
   case-sensitive: false
-  partial-match: true
 words:
-  - Shōgun
-  - Сёгун
+  - Shōgun*
+  - Сёгун*
