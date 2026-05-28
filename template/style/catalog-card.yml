@@ -9,10 +9,11 @@ fields:
 
 type: grid
 grid-style:
-  columns: [7.5mm, auto]
+  columns: [10mm, auto]
   rows: 3
   row-gutter: 10pt
   column-gutter: 5pt
+  align: top
   # stroke: rgb("#000000")
 grid-items:
   - field: author
@@ -34,6 +35,9 @@ grid-items:
   - field: ISBN
     row: 3
     col: 2
+    margin:
+      top: 4pt
+      bottom: 4pt
     style:
       paragraph:
         first-line-indent:
@@ -47,9 +51,6 @@ grid-items:
     style:
       text:
         size: 8pt
-    margin:
-      top: 4pt
-      bottom: 4pt
   - field: Авторский знак
     row: 2
     col: 1
@@ -94,3 +95,7 @@ style:
   stroke: none
   radius: 2pt
   inset: 12pt
+
+place:
+  position: [bottom, center]
+  float: true

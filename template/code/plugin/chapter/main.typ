@@ -1,3 +1,5 @@
+#let frontmatter = () => include "../../../book/frontmatter.typ"
+
 #let read(..args) = {
   let items = args.pos()
   let i = 0
