@@ -115,7 +115,9 @@
 #let _parse-style-map(dict) = {
   let result = (:)
   for (k, v) in dict {
-    let parsed = if type(v) == array {
+    let parsed = if type(v) == dictionary {
+      _parse-style-map(v)
+    } else if type(v) == array {
       v.map(el => _parse-value-ex(if type(el) == str { el } else { repr(el) }))
     } else if type(v) == str {
       _parse-value-ex(v)

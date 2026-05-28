@@ -36,8 +36,8 @@ grid-items:
     row: 3
     col: 2
     margin:
-      top: 4pt
-      bottom: 4pt
+      top: 5pt
+      bottom: 5pt
     style:
       paragraph:
         first-line-indent:
@@ -67,7 +67,9 @@ grid-items:
         columns: [5fr, 1fr]
         rows: 2
         align: right
-        inset: 4pt
+        inset:
+          x: 0pt
+          y: 3pt
         stroke: none
       table-items:
         - text: УДК
@@ -92,9 +94,9 @@ uses-style:
 style:
   width: 100%
   height: auto
-  stroke: none
   radius: 2pt
   inset: 12pt
+  # stroke: rgb("#000000")
 
 place:
   position: [bottom, center]
