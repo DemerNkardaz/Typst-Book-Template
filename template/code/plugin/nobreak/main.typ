@@ -1,7 +1,7 @@
-#let data = yaml("../../../settings/nobreak.yml")
+#let _data = yaml("../../../settings/nobreak.yml")
 
-#let _options = data.at("options", default: (:))
-#let _words = data.at("words", default: ())
+#let _options = _data.at("options", default: (:))
+#let _words = _data.at("words", default: ())
 
 #let _escape(word) = {
   word

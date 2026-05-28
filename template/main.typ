@@ -6,6 +6,7 @@
 #show: style.use-par
 #show: style.use-text
 #show: nobreak.apply
+#show: typography.apply
 
 #set document(
 	title: meta.get("title"),
