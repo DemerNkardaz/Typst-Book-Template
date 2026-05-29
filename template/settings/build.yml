@@ -1,10 +1,10 @@
-output-file-name: "Моя книга"
+# output-file-name: Моя книга
 color-conversion: true
-open-after-build: true
+open-after-build: false
 mode-default:
   ICC: sRGB_v4_ICC_preference_displayclass
   pdf-standard: PDF 2.0
-  pages: 1,2,6-
+  # pages: 1,2,6-
 mode-print:
   ICC: PSOcoated_v3
   pdf-standard: PDF 2.0

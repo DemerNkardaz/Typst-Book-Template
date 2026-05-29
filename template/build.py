@@ -253,7 +253,11 @@ with open(PROPERTIES_YML, encoding="utf-8") as f:
 mode = layout["mode"]
 mode_config = build[f"mode-{mode}"]
 
-output_name = build["output-file-name"]
+output_name = (
+    build["output-file-name"]
+    if build.get("output-file-name")
+    else book["title"]
+)
 icc_name = mode_config["ICC"]
 pdf_standard_raw = mode_config.get("pdf-standard")
 color_conversion = bool(build.get("color-conversion", False))
@@ -366,6 +370,7 @@ with pikepdf.open(pdf_path, allow_overwriting_input=True) as pdf:
         m("xmp:Nickname",              book.get("title-short"))
         m("photoshop:AuthorsPosition", book.get("author-position"))
         m("photoshop:CaptionWriter",   book.get("description-author"))
+        m("pdf:Producer",   book.get("description-author"))
 
     pdf.save(pdf_path)
 
