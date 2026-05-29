@@ -15,3 +15,5 @@
 *.7z binary
 *.rar binary
 *.pdf binary
+
+*.icc binary

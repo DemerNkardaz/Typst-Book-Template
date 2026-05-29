@@ -1,11 +1,22 @@
 version = 1
 
-# This is a placeholder assets.
-# Replace it with your own assets and update the annotations.
 [[annotations]]
-    path = [
-        "/template/assets/logo-series.svg"
-    ]
-    precedence = "override"
-    SPDX-FileCopyrightText = "2026 Ялла Нкардаз"
-    SPDX-License-Identifier = "CC-BY-NC-ND-4.0"
+	path = [
+		"lib.typ",
+		"typst.toml",
+		"README.md"
+	]
+	precedence = "override"
+	SPDX-FileCopyrightText = "2026 Ялла Нкардаз"
+	SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+	path = [
+		".vscode/**",
+		".gitignore",
+		".gitattributes",
+		"TODO.md"
+	]
+
+	SPDX-FileCopyrightText = "NONE"
+	SPDX-License-Identifier = "CC0-1.0"

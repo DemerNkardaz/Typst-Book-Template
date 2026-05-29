@@ -1,0 +1,7 @@
+output-file-name: "Моя книга"
+mode-default:
+  ICC: sRGB_v4_ICC_preference_displayclass
+  GTS: PDF/A
+mode-print:
+  ICC: PSOcoated_v3
+  GTS: PDF/X
