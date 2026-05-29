@@ -7,6 +7,7 @@ import pikepdf
 from pikepdf import Dictionary, Array, Name, Stream
 from datetime import datetime
 import shutil
+import re
 
 if isinstance(sys.stdout, io.TextIOWrapper):
     sys.stdout.reconfigure(encoding="utf-8")
@@ -22,33 +23,29 @@ LOG_PATH = BASE_DIR / "build.log"
 
 
 def roman_to_int(s: str) -> int:
-    """
-    Конвертирует римскую строку в арабское число.
-    """
     roman_map = {
-        'I': 1,
-        'V': 5,
-        'X': 10,
-        'L': 50,
-        'C': 100,
-        'D': 500,
-        'M': 1000
+        'I': 1, 'V': 5, 'X': 10, 'L': 50,
+        'C': 100, 'D': 500, 'M': 1000,
     }
-
     total = 0
     prev_value = 0
-
     for char in reversed(s.upper()):
         current_value = roman_map.get(char, 0)
-
         if current_value < prev_value:
             total -= current_value
         else:
             total += current_value
-
         prev_value = current_value
-
     return total
+
+
+NS_PREFIXES = {
+    "http://prismstandard.org/namespaces/basic/1.0/",
+    "http://purl.org/dc/elements/1.1/",
+    "http://ns.adobe.com/xap/1.0/",
+    "http://ns.adobe.com/xap/1.0/rights/",
+    "http://ns.adobe.com/photoshop/1.0/",
+}
 
 
 def pdf_info(path: Path) -> dict[str, object]:
@@ -76,6 +73,16 @@ def pdf_info(path: Path) -> dict[str, object]:
             info["pdf_standard"] = f"PDF/A-{part}{conformance.lower()}"
         else:
             info["pdf_standard"] = None
+
+        xmp_info: dict[str, object] = {}
+        for key in xmp:
+            uri = key.strip("{").split("}")[0]
+            if uri in NS_PREFIXES:
+                val = xmp.get(key)
+                if val:
+                    refinedKey = re.sub(r"\{([^}]+)\}", r"\1", key)
+                    xmp_info[refinedKey] = str(val)
+        info["xmp"] = xmp_info if xmp_info else None
 
         intents = pdf.Root.get("/OutputIntents")
         if intents:
@@ -109,9 +116,7 @@ def write_log(
             return "—"
         return f"{b:,} bytes ({b / 1024 / 1024:.2f} MB)"
 
-    def section(
-        path: Path, info: dict[str, object], is_out: bool = False
-    ) -> str:
+    def section(path: Path, info: dict[str, object]) -> str:
         name = path.name.upper()
         sep = "=" * len(name)
         lines = [
@@ -139,12 +144,18 @@ def write_log(
             ]
         else:
             lines.append("icc profile:  not yet assigned")
+        xmp = info.get("xmp")
+        if isinstance(xmp, dict):
+            lines.append("")
+            for k, v in xmp.items():
+                label = k.ljust(60)
+                lines.append(f"{label} {v}")
         return "\n".join(lines)
 
     content = "\n\n".join([
         f"build log — {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
         section(raw_path, raw_info),
-        section(out_path, out_info, is_out=True),
+        section(out_path, out_info),
     ])
 
     LOG_PATH.write_text(content + "\n", encoding="utf-8")
@@ -326,7 +337,7 @@ with pikepdf.open(pdf_path, allow_overwriting_input=True) as pdf:
     pdf.Root["/OutputIntents"] = Array([pdf.make_indirect(output_intent)])
     with pdf.open_metadata() as meta:
         def m(key: str, val: object) -> None:
-            if val:
+            if val is not None:
                 meta[key] = str(val)
 
         m("prism:title",               book.get("title"))
@@ -338,10 +349,10 @@ with pikepdf.open(pdf_path, allow_overwriting_input=True) as pdf:
         m("prism:seriesTitle",         book.get("series"))
         m("prism:issueName",           book.get("volume-title"))
         m("prism:volume",              (
-                                        roman_to_int(book["volume"])
-                                        if book.get("volume")
-                                        else None
-                                       ))
+            roman_to_int(book["volume"])
+            if book.get("volume")
+            else None
+        ))
         m("prism:url",                 book.get("publication-url"))
         m("prism:isbn",                book_properties.get("ISBN"))
         m("prism:issn",                book_properties.get("ISSN"))
@@ -350,10 +361,8 @@ with pikepdf.open(pdf_path, allow_overwriting_input=True) as pdf:
         m("prism:copyright",           book.get("copyright-notice"))
         m("xmpRights:WebStatement",    book.get("author-url"))
         m("xmpRights:Marked",          (
-                                        "True"
-                                        if book.get("copyright")
-                                        else None
-                                       ))
+            "True" if book.get("copyright") else None
+        ))
         m("xmp:Nickname",              book.get("title-short"))
         m("photoshop:AuthorsPosition", book.get("author-position"))
         m("photoshop:CaptionWriter",   book.get("description-author"))
