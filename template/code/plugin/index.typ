@@ -4,3 +4,4 @@
 #import "./typography/main.typ" as typography
 #import "./chapter/main.typ" as chapter
 #import "./nobreak/main.typ" as nobreak
+#import "./hyphenation/main.typ" as hyphenation

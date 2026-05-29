@@ -36,10 +36,6 @@
   out
 }
 
-#let resolved = _resolve-storage("(\\d)[ ](${temperature-scales})")
-
-#resolved
-
 #let _parse-inline-evals(s) = {
   let segments = ()
   let rest = s
@@ -88,13 +84,67 @@
   parts.join()
 }
 
+#let _unescape(s) = {
+  s
+    .replace("\\.", ".")
+    .replace("\\!", "!")
+    .replace("\\?", "?")
+    .replace("\\,", ",")
+    .replace("\\:", ":")
+    .replace("\\$", "$")
+    .replace("\\\\", "\\")
+}
+
+#let _parse-condition(condition) = {
+  // Парсим "$1(not-in:...)" → (capture: 1, kind: "not-in", value: "...")
+  let m = condition.match(regex("^\\$(\\d+)\\(([a-z-]+):(.*)\\)$"))
+  if m == none { return none }
+  (
+    capture: int(m.captures.at(0)),
+    kind:    m.captures.at(1),
+    value:   m.captures.at(2),
+  )
+}
+
+#let _check-condition(text, pattern, condition) = {
+  let parsed = _parse-condition(condition)
+  if parsed == none { return true }
+
+  // Получаем нужный capture
+  let m        = text.match(regex("^(?:" + pattern + ")$"))
+  let captures = if m != none { m.captures } else { () }
+  let idx      = parsed.capture - 1
+  let subject  = if idx < captures.len() and captures.at(idx) != none {
+    captures.at(idx)
+  } else {
+    text.clusters().first()
+  }
+
+  if parsed.kind == "not-in" {
+    // Резолвим ${...} внутри value
+    let resolved = _resolve-storage(parsed.value)
+    // Разбиваем на отдельные символы/токены по "|"
+    let tokens = resolved.split("|").map(s => _unescape(s))
+    not tokens.contains(subject)
+  } else {
+    true
+  }
+}
+
 #let _apply-rules(rules, body) = {
   if rules.len() == 0 { return body }
   let rule        = rules.first()
   let rest-rules  = rules.slice(1)
   let pattern     = _resolve-storage(rule.at(0))
   let replacement = _resolve-storage(rule.at(1))
-  show regex(pattern): it => _build-replacement(replacement, it.text, pattern)
+  let condition   = if rule.len() > 2 { rule.at(2) } else { none }
+  show regex(pattern): it => {
+    if condition != none and not _check-condition(it.text, pattern, condition) {
+      it.text
+    } else {
+      _build-replacement(replacement, it.text, pattern)
+    }
+  }
   _apply-rules(rest-rules, body)
 }
 
@@ -102,3 +152,12 @@
   if _rules.len() == 0 { return content }
   _apply-rules(_rules.rev(), content)
 }
+
+#let _dbg-condition(text) = {
+  let stored = _storage.at("right-sided-punctuation", default: ())
+  let first  = text.clusters().first()
+  let mapped = stored.map(s => str(s))
+  [first: "#first" | mapped: #mapped.join("|")]
+}
+
+#_dbg-condition(". — текст")

@@ -33,6 +33,13 @@ storage:
   right-sided-punctuation: [
     ‼, ⁇, ⁈, ⁉, ":", ;, \., ",", \!, \?, …, ›, », “, ’
   ]
+  spaces: [
+    \u0020, \u00A0, \u2002, \u2003, # Space, No-break space, En space, Em space
+    \u2004, \u2005, \u2006, # Three-per-em space, Four-per-em space, Six-per-em space
+    \u2007, \u2008, \u2009, # Figure space, Punctuation space, Thin space
+    \u200A, \u200B, \uFEFF, # Hair space, Zero width space, No-break zero width space
+    \u205F, \u3000, # Medium math space, Ideographic space
+  ]
 
 rules: [
     # Убрать повторение пробелов
@@ -47,9 +54,17 @@ rules: [
     # Remove space before right-sided punctuation
     ["[ ](${right-sided-punctuation})", "$1"],
 
-    # Неразрывный пробел после тире в начале строки
-    # No-break space after hyphen at the beginning of the line
-    ["^(\u2014) ", "$1\u00A0"],
+    # Неразрывный пробел после длинного тире в начале строки
+    # No-break space after em dash at the beginning of the line
+    ["^(—)[ ]", "$1\u00A0"],
+
+    # Неразрывный пробел перед длинным тире между словами
+    # No-break space before em dash between words
+    ["(.)[ ](—)[ ]", "$1\u00A0$2 ", "$1(not-in:${right-sided-punctuation})"],
+
+    # Неразрывный пробел перед и после длинного тире в атрибуции
+    # No-break space before and after em dash in attribution
+    ["(${right-sided-punctuation})[ ](—)[ ]", "$1\u00A0$2\u00A0"],
 
     # Знак умножения между числами: «3×4», «1920×1080»
     # Multiplication sign between numbers
@@ -76,7 +91,7 @@ rules: [
     # ====================================================
 
     # Вынос точки за пределы закрывающей кавычки
-    [".([»“])", "$1."],
+    ["\\.([»“])", "$1."],
 
     # Инициалы перед фамилией: «И. И. Иванов»
     [
