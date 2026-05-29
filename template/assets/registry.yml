@@ -1,0 +1,14 @@
+# All registred assets will be downloaded if they are not found locally
+ICC:
+  Coated_Fogra39L_VIGC_260: https://registry.color.org/profile-registry/profiles/Coated_Fogra39L_VIGC_260.icc
+  Coated_Fogra39L_VIGC_300: https://registry.color.org/profile-registry/profiles/Coated_Fogra39L_VIGC_300.icc
+  Display P3: https://registry.color.org/rgb-registry/profiles/DisplayP3.zip
+  ISO22028-2_ROMM-RGB: https://registry.color.org/rgb-registry/profiles/ISO22028-2_ROMM-RGB.icc
+  PSOcoated_v3: https://registry.color.org/profile-registry/profiles/PSOcoated_v3.icc
+  PSOsc-b_paper_v3_FOGRA54: https://registry.color.org/profile-registry/profiles/PSOsc-b_paper_v3_FOGRA54.icc
+  PSOuncoated_v3_FOGRA52: https://registry.color.org/profile-registry/profiles/PSOuncoated_v3_FOGRA52.icc
+  sRGB_v4_ICC_preference: https://registry.color.org/rgb-registry/profiles/sRGB_v4_ICC_preference.icc
+  sRGB_v4_ICC_preference_displayclass: https://registry.color.org/rgb-registry/profiles/sRGB_v4_ICC_preference_displayclass.icc
+  sRGB2014: https://registry.color.org/rgb-registry/profiles/sRGB2014.icc
+  Uncoated_Fogra47L_VIGC_260: https://registry.color.org/profile-registry/profiles/Uncoated_Fogra47L_VIGC_260.icc
+  Uncoated_Fogra47L_VIGC_300: https://registry.color.org/profile-registry/profiles/Uncoated_Fogra47L_VIGC_300.icc

@@ -8,11 +8,72 @@ from pikepdf import Dictionary, Array, Name, Stream
 from datetime import datetime
 import shutil
 import re
+import urllib.request
+import zipfile
+import tempfile
+
+BASE_DIR = Path(__file__).parent
+
+# ── asset check & download ───────────────────────
+
+REGISTRY_YML = BASE_DIR / "assets" / "registry.yml"
+
+with open(REGISTRY_YML, encoding="utf-8") as f:
+    register = yaml.safe_load(f)
+
+
+def download_file(url: str, target: Path) -> None:
+    req = urllib.request.Request(
+        url,
+        headers={"User-Agent": "Mozilla/5.0"},
+    )
+    with urllib.request.urlopen(req) as resp, open(target, "wb") as dst:
+        dst.write(resp.read())
+
+
+for folder_name, entries in register.items():
+    folder_path = BASE_DIR / "assets" / folder_name
+    folder_path.mkdir(parents=True, exist_ok=True)
+
+    for asset_name, url in entries.items():
+        existing = next(folder_path.glob(f"{asset_name}.*"), None)
+        if existing:
+            print(f"[assets] found {folder_name}/{existing.name}")
+            continue
+
+        print(f"[assets] downloading {folder_name}/{asset_name} <- {url}")
+        is_zip = url.lower().endswith(".zip")
+
+        if is_zip:
+            with (
+                tempfile.NamedTemporaryFile(suffix=".zip", delete=False)
+                as tmp
+            ):
+                tmp_path = Path(tmp.name)
+            download_file(url, tmp_path)
+            with zipfile.ZipFile(tmp_path) as zf:
+                for member in zf.namelist():
+                    member_path = Path(member)
+                    if member_path.suffix.lower() in (".icc", ".icm"):
+                        target = (
+                            folder_path / f"{asset_name}{member_path.suffix}"
+                        )
+                        with zf.open(member) as src, open(target, "wb") as dst:
+                            dst.write(src.read())
+                        print(f"[assets] extracted -> {target.name}")
+            tmp_path.unlink()
+        else:
+            suffix = Path(url).suffix
+            target = folder_path / f"{asset_name}{suffix}"
+            download_file(url, target)
+            print(f"[assets] saved -> {target.name}")
+
+# ── end asset check ───────────────────────
+
 
 if isinstance(sys.stdout, io.TextIOWrapper):
     sys.stdout.reconfigure(encoding="utf-8")
 
-BASE_DIR = Path(__file__).parent
 LAYOUT_YML = BASE_DIR / "settings" / "layout.yml"
 BUILD_YML = BASE_DIR / "settings" / "build.yml"
 BOOK_YML = BASE_DIR / "meta" / "book.yml"

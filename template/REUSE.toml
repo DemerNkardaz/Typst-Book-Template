@@ -16,7 +16,6 @@ version = 1
 		"code/utils/**",
 		"code/components/**",
 		"code/plugin/**",
-		"code/package/index.typ",
 	]
 	precedence = "override"
 	SPDX-FileCopyrightText = "2026 Ялла Нкардаз"
@@ -43,10 +42,11 @@ version = 1
 
 [[annotations]]
 	path = [
+		"code/package/index.typ",
 		".vscode/**",
 		".gitignore",
 		".gitattributes",
-		"REUSE.toml",
+		"REUSE.toml"
 	]
 
 	SPDX-FileCopyrightText = "NONE"
