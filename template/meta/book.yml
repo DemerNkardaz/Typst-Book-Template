@@ -1,7 +1,16 @@
 author: Иван Иванов
+author-url: http://example.com/
+author-position: Автор
 initials: И. Иванов
+
 title: Моя книга
+title-short: Книга
+
 description: Моя афигенная книга
+description-author: Илья Муромец
+
+copyright: true
+copyright-notice: (с) Иван Иванов
 
 volume: I
 volume-title: Наименование тома
@@ -11,6 +20,7 @@ series: Наименование серии
 
 publisher: Издательство
 publisher-origin: Москва
+publication-url: http://example.com/
 
 version: 1.0.0
 
@@ -19,8 +29,7 @@ date:
   month: 11
   day: 11
 
-keywords:
-  - Книга
+keywords: [Книга]
 
 genre: жанр
 

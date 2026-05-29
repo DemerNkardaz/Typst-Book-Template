@@ -14,9 +14,41 @@ if isinstance(sys.stdout, io.TextIOWrapper):
 BASE_DIR = Path(__file__).parent
 LAYOUT_YML = BASE_DIR / "settings" / "layout.yml"
 BUILD_YML = BASE_DIR / "settings" / "build.yml"
+BOOK_YML = BASE_DIR / "meta" / "book.yml"
+PROPERTIES_YML = BASE_DIR / "meta" / "property.yml"
 ICC_DIR = BASE_DIR / "assets" / "ICC"
 MAIN_TYP = BASE_DIR / "main.typ"
 LOG_PATH = BASE_DIR / "build.log"
+
+
+def roman_to_int(s: str) -> int:
+    """
+    Конвертирует римскую строку в арабское число.
+    """
+    roman_map = {
+        'I': 1,
+        'V': 5,
+        'X': 10,
+        'L': 50,
+        'C': 100,
+        'D': 500,
+        'M': 1000
+    }
+
+    total = 0
+    prev_value = 0
+
+    for char in reversed(s.upper()):
+        current_value = roman_map.get(char, 0)
+
+        if current_value < prev_value:
+            total -= current_value
+        else:
+            total += current_value
+
+        prev_value = current_value
+
+    return total
 
 
 def pdf_info(path: Path) -> dict[str, object]:
@@ -201,6 +233,12 @@ with open(LAYOUT_YML, encoding="utf-8") as f:
 with open(BUILD_YML, encoding="utf-8") as f:
     build = yaml.safe_load(f)
 
+with open(BOOK_YML, encoding="utf-8") as f:
+    book = yaml.safe_load(f)
+
+with open(PROPERTIES_YML, encoding="utf-8") as f:
+    book_properties = yaml.safe_load(f)
+
 mode = layout["mode"]
 mode_config = build[f"mode-{mode}"]
 
@@ -286,6 +324,40 @@ with pikepdf.open(pdf_path, allow_overwriting_input=True) as pdf:
     )
 
     pdf.Root["/OutputIntents"] = Array([pdf.make_indirect(output_intent)])
+    with pdf.open_metadata() as meta:
+        def m(key: str, val: object) -> None:
+            if val:
+                meta[key] = str(val)
+
+        m("prism:title",               book.get("title"))
+        m("prism:subtitle",            book.get("sub-title"))
+        m("prism:section",             book.get("section"))
+        m("prism:teaser",              book.get("teaser"))
+        m("prism:category",            book.get("genre"))
+        m("prism:isPartOf",            book.get("cycle"))
+        m("prism:seriesTitle",         book.get("series"))
+        m("prism:issueName",           book.get("volume-title"))
+        m("prism:volume",              (
+                                        roman_to_int(book["volume"])
+                                        if book.get("volume")
+                                        else None
+                                       ))
+        m("prism:url",                 book.get("publication-url"))
+        m("prism:isbn",                book_properties.get("ISBN"))
+        m("prism:issn",                book_properties.get("ISSN"))
+        m("prism:doi",                 book_properties.get("DOI"))
+        m("dc:rights",                 book.get("copyright-notice"))
+        m("prism:copyright",           book.get("copyright-notice"))
+        m("xmpRights:WebStatement",    book.get("author-url"))
+        m("xmpRights:Marked",          (
+                                        "True"
+                                        if book.get("copyright")
+                                        else None
+                                       ))
+        m("xmp:Nickname",              book.get("title-short"))
+        m("photoshop:AuthorsPosition", book.get("author-position"))
+        m("photoshop:CaptionWriter",   book.get("description-author"))
+
     pdf.save(pdf_path)
 
 print(f"[icc] applied → {pdf_path}")
