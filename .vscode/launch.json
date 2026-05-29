@@ -5,8 +5,8 @@
       "name": "build",
       "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}/template/build.py",
-      "cwd": "${workspaceFolder}/template",
+      "program": "${workspaceFolder}/build.py",
+      "cwd": "${workspaceFolder}",
       "python": "py"
     }
   ]

@@ -1,6 +1,6 @@
-#import "./code/plugin/index.typ": *
-#import "./code/package/index.typ": *
-#import "./code/components/index.typ": *
+#import "./code/plugin/lib.typ": *
+#import "./code/package/lib.typ": *
+#import "./code/components/lib.typ": *
 
 #show: layout.init
 #show: style.use-par

@@ -1,29 +1,13 @@
 [package]
 name = "yn-book-template"
-version = "0.1.0"
-entrypoint = "lib.typ"
+version = "1.0.0"
 authors = ["Yalla Nkardaz <https://github.com/DemerNkardaz>"]
-license = "MIT"
+license = "MIT" # See REUSE.toml for licensing details
 description = "A book project template"
 repository = "https://github.com/DemerNkardaz/Typst-Book-Template"
-exclude = [
-	".git",
-	".github",
-	".gitignore",
-	".gitattributes",
-	".vscode",
-	".idea",
-	".hintrc",
-	"TODO.md",
-	"LICENSES"
-]
 keywords = ["book", "template"]
-categories = [
-	"book",
-	"layout",
-]
+categories = ["book", "layout"]
 
-
-[template]
-path = "template"
-entrypoint = "main.typ"
+[dependencies]
+rustycure = "0.2.0"
+rubby = "0.10.2"

@@ -20,7 +20,7 @@ Welcome to the template for creating a book! [I](https://github.com/DemerNkardaz
 ```bash
 pip install pyyaml pikepdf pillow
 ```
-Если ты используешь VS Code, то для сборки книги достаточно будет нажать <kbd>F5</kbd>.
+Если ты используешь VS Code, то для сборки книги достаточно будет нажать <kbd>F5</kbd> или использовать команду `make` в терминале.
 
 ## Рекомендации
 
@@ -44,7 +44,7 @@ If these packages are not installed, install them with `pip`:
 ```bash
 pip install pyyaml pikepdf pillow
 ```
-If you use VS Code, you can build the book by pressing <kbd>F5</kbd>.
+If you use VS Code, you can build the book by pressing <kbd>F5</kbd> or using the `make` command in the terminal.
 
 ## Recommendations
 

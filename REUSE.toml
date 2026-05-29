@@ -1,9 +1,21 @@
 version = 1
 
+# This is a placeholder asset.
+# Replace it with your own assets and update the annotations.
 [[annotations]]
 	path = [
-		"lib.typ",
-		"typst.toml",
+		"assets/logo-series.svg"
+	]
+	precedence = "override"
+	SPDX-FileCopyrightText = "2026 Ялла Нкардаз"
+	SPDX-License-Identifier = "CC-BY-NC-ND-4.0"
+
+[[annotations]]
+	path = [
+		"build.py",
+		"code/utils/**",
+		"code/components/**",
+		"code/plugin/**",
 		"README.md"
 	]
 	precedence = "override"
@@ -12,11 +24,104 @@ version = 1
 
 [[annotations]]
 	path = [
+		"assets/**",
+		"book/**",
+		"content/**",
+		"meta/**",
+		"settings/**",
+		"style/**",
+		"note/**",
+		"main.typ"
+	]
+
+  SPDX-FileCopyrightText = "Contributors"
+  SPDX-License-Identifier = "LicenseRef-UserContent"
+	comment = """
+	This directory or files contains user-generated content.
+	The license of this content is determined by the user
+	and is NOT covered by the project license.
+	"""
+
+[[annotations]]
+	path = [
+		"code/package/index.typ",
 		".vscode/**",
 		".gitignore",
 		".gitattributes",
+		"REUSE.toml",
 		"TODO.md"
 	]
 
 	SPDX-FileCopyrightText = "NONE"
 	SPDX-License-Identifier = "CC0-1.0"
+
+
+[[annotations]]
+	path = [
+		"assets/ICC/Display P3.icc",
+		"assets/ICC/ISO22028-2_ROMM-RGB.icc",
+		"assets/ICC/sRGB_v4_ICC_preference.icc",
+		"assets/ICC/sRGB_v4_ICC_preference_displayclass.icc",
+		"assets/ICC/sRGB2014.icc"
+	]
+	precedence = "closest"
+
+	SPDX-FileCopyrightText = "Copyright International Color Consortium"
+	SPDX-License-Identifier = "LicenseRef-ICC"
+
+	comment = """
+	ICC profiles obtained from https://www.color.org/
+
+	Permission to use, copy, and distribute these files is granted
+	by the International Color Consortium (ICC), provided that:
+
+	files are not modified,
+	ICC copyright notices are preserved,
+	the ICC name is not used for endorsement.
+
+	Profiles are distributed AS IS without warranty.
+	"""
+
+[[annotations]]
+	path = [
+		"assets/ICC/Coated_Fogra39L_VIGC_260.icc",
+		"assets/ICC/Coated_Fogra39L_VIGC_300.icc",
+		"assets/ICC/Uncoated_Fogra47L_VIGC_260.icc",
+		"assets/ICC/Uncoated_Fogra47L_VIGC_300.icc"
+	]
+	precedence = "closest"
+
+	SPDX-FileCopyrightText = "Copyright XRite, Inc."
+	SPDX-License-Identifier = "LicenseRef-XRite-VIGC-ICC"
+
+	comment = """
+	ICC profiles distributed by VIGC with permission from X-Rite, Inc.
+
+	These profiles may be used, embedded, exchanged, and shared without restriction.
+
+	They may not be altered or sold without written permission from VIGC.
+
+	This annotation reflects redistribution terms only; printing conditions
+	(e.g. FOGRA characterization data) are technical metadata, not licensing terms.
+	"""
+
+[[annotations]]
+	path = [
+		"assets/ICC/PSOcoated_v3.icc",
+		"assets/ICC/PSOuncoated_v3_FOGRA52.icc",
+		"assets/ICC/PSOsc-b_paper_v3_FOGRA54.icc"
+	]
+	precedence = "closest"
+
+	SPDX-FileCopyrightText = "Copyright Heidelberger Druckmaschinen AG"
+	SPDX-License-Identifier = "LicenseRef-ECI-Heidelberg-ICC"
+
+	comment = """
+	ICC profile provided by European Color Initiative (ECI)
+	with permission of Heidelberger Druckmaschinen AG.
+
+	May be used, embedded and exchanged without restriction.
+
+	May not be distributed, sold or altered without written permission
+	of ECI European Color Initiative.
+	"""
