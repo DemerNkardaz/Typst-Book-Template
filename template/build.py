@@ -37,11 +37,18 @@ def pdf_info(path: Path) -> dict[str, object]:
             val = docinfo.get(key)
             info[key.strip("/")] = str(val) if val else None
 
+        xmp = pdf.open_metadata()
+        part = xmp.get("pdfaid:part")
+        conformance = xmp.get("pdfaid:conformance")
+        if part and conformance:
+            info["pdf_standard"] = f"PDF/A-{part}{conformance.lower()}"
+        else:
+            info["pdf_standard"] = None
+
         intents = pdf.Root.get("/OutputIntents")
         if intents:
             intent = intents[0]
             icc_info: dict[str, object] = {
-                "S": str(intent.get("/S")),
                 "OutputConditionIdentifier":
                     str(intent.get("/OutputConditionIdentifier")),
             }
@@ -63,46 +70,49 @@ def write_log(
     out_path: Path,
     raw_info: dict[str, object],
     out_info: dict[str, object],
+    std: str | None = None,
 ) -> None:
     def fmt_size(b: object) -> str:
         if not isinstance(b, int):
             return "—"
         return f"{b:,} bytes ({b / 1024 / 1024:.2f} MB)"
 
-    def section(path: Path, info: dict[str, object]) -> str:
+    def section(
+        path: Path, info: dict[str, object], is_out: bool = False
+    ) -> str:
         name = path.name.upper()
         sep = "=" * len(name)
         lines = [
             f"| {sep}",
             f"| {name}",
             f"| {sep}",
-            f"path:        {path}",
-            f"size:        {fmt_size(info['size_bytes'])}",
-            f"pages:       {info['pages']}",
-            f"pdf version: {info['pdf_version']}",
-            f"title:       {info.get('Title') or '—'}",
-            f"author:      {info.get('Author') or '—'}",
-            f"creator:     {info.get('Creator') or '—'}",
-            f"producer:    {info.get('Producer') or '—'}",
-            f"created:     {info.get('CreationDate') or '—'}",
-            f"modified:    {info.get('ModDate') or '—'}",
+            f"path:         {path}",
+            f"size:         {fmt_size(info['size_bytes'])}",
+            f"pages:        {info['pages']}",
+            f"pdf version:  {info['pdf_version']}",
+            f"pdf standard: {info.get('pdf_standard') or '—'}",
+            f"title:        {info.get('Title') or '—'}",
+            f"author:       {info.get('Author') or '—'}",
+            f"creator:      {info.get('Creator') or '—'}",
+            f"producer:     {info.get('Producer') or '—'}",
+            f"created:      {info.get('CreationDate') or '—'}",
+            f"modified:     {info.get('ModDate') or '—'}",
         ]
         icc = info["OutputIntent"]
         if isinstance(icc, dict):
             lines += [
-                f"icc profile: {icc.get('OutputConditionIdentifier')}",
-                f"icc gts:     {icc.get('S')}",
-                f"icc space:   {icc.get('color_space', '—')}",
-                f"icc size:    {fmt_size(icc.get('size_bytes'))}",
+                f"icc profile:  {icc.get('OutputConditionIdentifier')}",
+                f"icc space:    {icc.get('color_space', '—')}",
+                f"icc size:     {fmt_size(icc.get('size_bytes'))}",
             ]
         else:
-            lines.append("icc profile: not yet assigned")
+            lines.append("icc profile:  not yet assigned")
         return "\n".join(lines)
 
     content = "\n\n".join([
         f"build log — {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
         section(raw_path, raw_info),
-        section(out_path, out_info),
+        section(out_path, out_info, is_out=True),
     ])
 
     LOG_PATH.write_text(content + "\n", encoding="utf-8")
@@ -196,25 +206,53 @@ mode_config = build[f"mode-{mode}"]
 
 output_name = build["output-file-name"]
 icc_name = mode_config["ICC"]
-gts_raw = mode_config.get("GTS")
+pdf_standard_raw = mode_config.get("pdf-standard")
 color_conversion = bool(build.get("color-conversion", False))
 
-gts_map = {
-    "PDF/A": "/GTS_PDFA1",
-    "PDF/X": "/GTS_PDFX",
+pdf_standard_to_standard = {
+    "PDF 1.4":  "1.4",
+    "PDF 1.5":  "1.5",
+    "PDF 1.6":  "1.6",
+    "PDF 1.7":  "1.7",
+    "PDF 2.0":  "2.0",
+    "PDF/A-1b": "a-1b",
+    "PDF/A-1a": "a-1a",
+    "PDF/A-2b": "a-2b",
+    "PDF/A-2u": "a-2u",
+    "PDF/A-2a": "a-2a",
+    "PDF/A-3b": "a-3b",
+    "PDF/A-3u": "a-3u",
+    "PDF/A-3a": "a-3a",
+    "PDF/A-4":  "a-4",
+    "PDF/A-4f": "a-4f",
+    "PDF/A-4e": "a-4e",
+    "PDF/UA-1": "ua-1",
 }
-intent_s = gts_map.get(gts_raw, "/GTS_PDFXUnknown")
+
+pdf_standard = pdf_standard_to_standard.get(pdf_standard_raw)
 
 raw_pdf_path = BASE_DIR / "main.pdf"
-pdf_path = BASE_DIR / f"{output_name}.pdf"
+pdf_path = BASE_DIR / f"{output_name} [{mode}].pdf"
 icc_path = ICC_DIR / f"{icc_name}.icc"
 
 print(f"[typst] compiling {MAIN_TYP} → {raw_pdf_path}")
+typst_cmd = [
+    "typst", "compile",
+    str(MAIN_TYP), str(raw_pdf_path),
+]
+
+pages = mode_config.get("pages")
+if pages is not None:
+    typst_cmd += ["--pages", str(pages)]
+if pdf_standard is not None:
+    typst_cmd += ["--pdf-standard", pdf_standard]
+
 result = subprocess.run(
-    ["typst", "compile", str(MAIN_TYP), str(raw_pdf_path)],
+    typst_cmd,
     capture_output=True,
     text=True,
 )
+
 if result.returncode != 0:
     print(result.stderr)
     raise SystemExit("typst failed to compile")
@@ -222,8 +260,8 @@ print("[typst] done")
 
 raw_info = pdf_info(raw_pdf_path)
 
-gts_label = gts_raw or "Unknown"
-print(f"[icc] using {icc_name} (mode: {mode}, GTS: {gts_label})")
+pdf_standard_label = pdf_standard_raw or "—"
+print(f"[icc] using {icc_name} (mode: {mode}, standard: {pdf_standard_label})")
 
 with open(icc_path, "rb") as f:
     icc_data = f.read()
@@ -243,7 +281,6 @@ with pikepdf.open(pdf_path, allow_overwriting_input=True) as pdf:
 
     output_intent = Dictionary(
         Type=Name("/OutputIntent"),
-        S=Name(intent_s),
         OutputConditionIdentifier=pikepdf.String(icc_name),
         DestOutputProfile=icc_stream,
     )
@@ -253,5 +290,13 @@ with pikepdf.open(pdf_path, allow_overwriting_input=True) as pdf:
 
 print(f"[icc] applied → {pdf_path}")
 
+if build.get("open-after-build", False):
+    CREATE_BREAKAWAY_FROM_JOB = 0x01000000
+    subprocess.Popen(
+        ["cmd", "/c", "start", "", str(pdf_path)],
+        shell=False,
+        creationflags=subprocess.DETACHED_PROCESS | CREATE_BREAKAWAY_FROM_JOB,
+    )
+
 out_info = pdf_info(pdf_path)
-write_log(raw_pdf_path, pdf_path, raw_info, out_info)
+write_log(raw_pdf_path, pdf_path, raw_info, out_info, std=pdf_standard_raw)
