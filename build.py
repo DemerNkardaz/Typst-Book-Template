@@ -11,6 +11,11 @@ import re
 import urllib.request
 import zipfile
 import tempfile
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--mode")
+args = parser.parse_args()
 
 BASE_DIR = Path(__file__).parent
 
@@ -311,7 +316,7 @@ with open(BOOK_YML, encoding="utf-8") as f:
 with open(PROPERTIES_YML, encoding="utf-8") as f:
     book_properties = yaml.safe_load(f)
 
-mode = layout["mode"]
+mode = args.mode or layout["mode"]
 mode_config = build[f"mode-{mode}"]
 
 output_name = (
@@ -360,6 +365,8 @@ if pages is not None:
     typst_cmd += ["--pages", str(pages)]
 if pdf_standard is not None:
     typst_cmd += ["--pdf-standard", pdf_standard]
+if args.mode is not None:
+    typst_cmd += ["--input", f"layout-mode={mode}"]
 
 result = subprocess.run(
     typst_cmd,
