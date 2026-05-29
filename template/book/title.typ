@@ -32,6 +32,8 @@
 	[
 		#meta.get("publisher")\
 		#meta.get("publisher-origin")
+		#v(2pt)
+		#meta.get("date.year")
 	]
 )
 
