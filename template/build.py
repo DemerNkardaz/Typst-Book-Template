@@ -109,6 +109,82 @@ def write_log(
     print(f"[log] {LOG_PATH}")
 
 
+def convert_images(
+    pdf: pikepdf.Pdf, icc_data: bytes, dst_channels: int
+) -> int:
+    from PIL import Image, ImageCms
+    import io as _io
+
+    dst_profile = ImageCms.ImageCmsProfile(_io.BytesIO(icc_data))
+    dst_mode = "CMYK" if dst_channels == 4 else "RGB"
+
+    converted = 0
+    for page in pdf.pages:
+        resources = page.get("/Resources")
+        if not resources:
+            continue
+        xobjects = resources.get("/XObject")
+        if not xobjects:
+            continue
+        for key in xobjects.keys():
+            xobj = xobjects[key]
+            if xobj.get("/Subtype") != "/Image":
+                continue
+
+            try:
+                raw = bytes(xobj.read_bytes())
+                width = int(xobj["/Width"])
+                height = int(xobj["/Height"])
+                cs = xobj.get("/ColorSpace")
+
+                if (
+                    isinstance(cs, pikepdf.Array)
+                    and str(cs[0]) == "/ICCBased"
+                ):
+                    src_icc = bytes(cs[1].read_bytes())
+                    src_profile = ImageCms.ImageCmsProfile(
+                        _io.BytesIO(src_icc)
+                    )
+                else:
+                    src_profile = ImageCms.createProfile("sRGB")
+
+                img = Image.frombytes("RGB", (width, height), raw)
+            except Exception as e:
+                print(f"  skip {key}: {e}")
+                continue
+
+            img = img.convert("RGB")
+
+            transform = ImageCms.buildTransform(
+                src_profile,
+                dst_profile,
+                "RGB",
+                dst_mode,
+                renderingIntent=ImageCms.Intent.RELATIVE_COLORIMETRIC,
+            )
+            out_img = ImageCms.applyTransform(img, transform)
+            if out_img is None:
+                continue
+
+            buf = _io.BytesIO()
+            out_img.save(buf, format="JPEG", quality=95)
+            new_data = buf.getvalue()
+
+            xobj.write(new_data, filter=Name("/DCTDecode"))
+            xobj["/ColorSpace"] = (
+                Name("/DeviceCMYK")
+                if dst_channels == 4
+                else Name("/DeviceRGB")
+            )
+            if dst_channels == 4:
+                xobj["/Decode"] = pikepdf.Array(
+                    [1, 0, 1, 0, 1, 0, 1, 0]
+                )
+            converted += 1
+
+    return converted
+
+
 with open(LAYOUT_YML, encoding="utf-8") as f:
     layout = yaml.safe_load(f)
 
@@ -121,6 +197,7 @@ mode_config = build[f"mode-{mode}"]
 output_name = build["output-file-name"]
 icc_name = mode_config["ICC"]
 gts_raw = mode_config.get("GTS")
+color_conversion = bool(build.get("color-conversion", False))
 
 gts_map = {
     "PDF/A": "/GTS_PDFA1",
@@ -157,6 +234,10 @@ channels = {"CMYK": 4, "RGB ": 3, "GRAY": 1}.get(color_space_tag, 3)
 shutil.copy2(raw_pdf_path, pdf_path)
 
 with pikepdf.open(pdf_path, allow_overwriting_input=True) as pdf:
+    if color_conversion:
+        n = convert_images(pdf, icc_data, channels)
+        print(f"[cc] images converted: {n}")
+
     icc_stream = Stream(pdf, icc_data)
     icc_stream["/N"] = channels
 

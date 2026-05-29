@@ -1,4 +1,5 @@
 output-file-name: "Моя книга"
+color-conversion: true
 mode-default:
   ICC: sRGB_v4_ICC_preference_displayclass
   GTS: PDF/A

@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "build",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/template/build.py",
+      "cwd": "${workspaceFolder}/template",
+      "python": "py"
+    }
+  ]
+}
