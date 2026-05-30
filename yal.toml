@@ -2,10 +2,11 @@
 yal-min-version = "0.1.0"
 
 [[fields]]
-id       = "book-name"
-type     = "text"
-required = true
-default  = "{placeholder}"
+id             = "book-name"
+type           = "text"
+required       = true
+default        = "{placeholder}"
+is-folder-name = true
 
 [[fields]]
 id       = "book-author"
