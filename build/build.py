@@ -13,9 +13,11 @@ import urllib.request
 import zipfile
 import tempfile
 import argparse
+from PIL import Image, ImageCms
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--mode")
+parser.add_argument("--as", dest="format")
 args = parser.parse_args()
 
 BASE_DIR = Path(__file__).parent.parent
@@ -338,6 +340,55 @@ def convert_images(
     return converted
 
 
+def apply_icc_to_image_data(
+    img_data: bytes,
+    icc_data: bytes,
+    channels: int
+        ) -> (bytes | None):
+    """Применяет ICC профиль к данным изображения в памяти."""
+    src_profile = ImageCms.createProfile("sRGB")
+    dst_profile = ImageCms.ImageCmsProfile(io.BytesIO(icc_data))
+    dst_mode = "CMYK" if channels == 4 else "RGB"
+
+    img = Image.open(io.BytesIO(img_data))
+    img = img.convert("RGB")
+
+    transform = ImageCms.buildTransform(
+        src_profile,
+        dst_profile,
+        "RGB",
+        dst_mode,
+        renderingIntent=ImageCms.Intent.RELATIVE_COLORIMETRIC,
+    )
+
+    out_img = ImageCms.applyTransform(img, transform)
+
+    if out_img is None:
+        return None
+
+    buf = io.BytesIO()
+    if channels == 4:
+        out_img = out_img.convert("RGB")
+    out_img.save(buf, format="PNG", icc_profile=icc_data)
+    return buf.getvalue()
+
+
+def process_png_files(directory: Path, icc_data: bytes, channels: int):
+    """Обработка всех PNG файлов в папке."""
+    for png_path in directory.glob("*.png"):
+        with open(png_path, "rb") as f:
+            raw_data = f.read()
+
+        new_data = apply_icc_to_image_data(raw_data, icc_data, channels)
+
+        if new_data is not None:
+            with open(png_path, "wb") as f:
+                f.write(new_data)
+            info("info.assets-extracted", name=png_path.name)
+        else:
+            warn("warnings.status-draft")
+
+
 with open(LAYOUT_YML, encoding="utf-8") as f:
     layout = yaml.safe_load(f)
 
@@ -377,10 +428,11 @@ output_name = (
 )
 
 icc_name = mode_config["ICC"]
-pdf_standard_raw = mode_config.get("pdf-standard")
+pdf_version_raw = mode_config.get("pdf-version")
+pdf_validator_raw = mode_config.get("pdf-validator")
 color_conversion = bool(build.get("color-conversion", False))
 
-pdf_standard_to_standard = {
+pdf_version_to_standard = {
     "PDF 1.4":  "1.4",
     "PDF 1.5":  "1.5",
     "PDF 1.6":  "1.6",
@@ -400,40 +452,77 @@ pdf_standard_to_standard = {
     "PDF/UA-1": "ua-1",
 }
 
-pdf_standard = pdf_standard_to_standard.get(pdf_standard_raw)
+pdf_standard = pdf_version_to_standard.get(pdf_version_raw)
+standards_list = [pdf_standard] if pdf_standard else []
+
+if isinstance(pdf_validator_raw, list):
+    for v in pdf_validator_raw:
+        val = pdf_version_to_standard.get(v)
+        if val:
+            standards_list.append(val)
+
+elif isinstance(pdf_validator_raw, str):
+    val = pdf_version_to_standard.get(pdf_validator_raw)
+    if val:
+        standards_list.append(val)
+
+pdf_standard = ",".join(standards_list)
+
+export_dir = (
+    BASE_DIR / build["export-dir"]
+    if build.get("export-dir")
+    else BASE_DIR
+    )
+export_arg_dir = f"{build["export-dir"]}/" if build.get("export-dir") else ""
+
+if export_dir != BASE_DIR:
+    export_dir.mkdir(parents=True, exist_ok=True)
 
 raw_pdf_path = BASE_DIR / "main.pdf"
-pdf_path = BASE_DIR / f"{output_name} [{mode}].pdf"
+pdf_path = export_dir / f"{output_name} [{mode}].pdf"
 icc_path = ICC_DIR / f"{icc_name}.icc"
 
-info("info.typst-compiling", src=MAIN_TYP, dst=raw_pdf_path)
-typst_cmd = [
-    "typst", "compile",
-    str(MAIN_TYP), str(raw_pdf_path),
-]
+png_dir = export_dir / f"{output_name} [{mode}]"
+png_arg_dir = f"{export_arg_dir}{output_name} [{mode}]"
+if args.format == "png":
+    png_dir.mkdir(parents=True, exist_ok=True)
+    typst_cmd = [
+        "typst", "compile",
+        str(MAIN_TYP), str(f"{png_arg_dir}/{{p}}.png"),
+    ]
+    typst_cmd += ["--format", args.format]
+    typst_cmd += ["--ppi", str(build["png-ppi"] or 300)]
+else:
+    info("info.typst-compiling", src=MAIN_TYP, dst=raw_pdf_path)
+    typst_cmd = [
+        "typst", "compile",
+        str(MAIN_TYP), str(raw_pdf_path),
+    ]
+
+    if pdf_standard is not None:
+        typst_cmd += ["--pdf-standard", pdf_standard]
 
 pages = mode_config.get("pages")
 if pages is not None:
     typst_cmd += ["--pages", str(pages)]
-if pdf_standard is not None:
-    typst_cmd += ["--pdf-standard", pdf_standard]
 if args.mode is not None:
     typst_cmd += ["--input", f"layout-mode={mode}"]
 
 result = subprocess.run(
     typst_cmd,
-    capture_output=True,
     text=True,
 )
 
 if result.returncode != 0:
-    print(result.stderr)
+    if result.stdout:
+        print("", result.stdout)
+    if result.stderr:
+        print("", result.stderr)
     raise SystemExit(error("errors.typst-failed"))
 succes("info.typst-done")
 
-raw_info = pdf_info(raw_pdf_path)
 
-pdf_standard_label = pdf_standard_raw or "—"
+pdf_standard_label = pdf_version_raw or "—"
 info("info.icc-using", icc=icc_name, mode=mode, standard=pdf_standard_label)
 
 with open(icc_path, "rb") as f:
@@ -442,71 +531,81 @@ with open(icc_path, "rb") as f:
 color_space_tag = icc_data[16:20].decode("ascii", errors="ignore")
 channels = {"CMYK": 4, "RGB ": 3, "GRAY": 1}.get(color_space_tag, 3)
 
-shutil.copy2(raw_pdf_path, pdf_path)
+if args.format == "png":
+    process_png_files(png_dir, icc_data, channels)
+    succes("info.typst-done")
+else:
+    raw_info = pdf_info(raw_pdf_path)
+    shutil.copy2(raw_pdf_path, pdf_path)
+    with pikepdf.open(pdf_path, allow_overwriting_input=True) as pdf:
+        if color_conversion:
+            n = convert_images(pdf, icc_data, channels)
+            info("info.cc-converted", n=n)
 
-with pikepdf.open(pdf_path, allow_overwriting_input=True) as pdf:
-    if color_conversion:
-        n = convert_images(pdf, icc_data, channels)
-        info("info.cc-converted", n=n)
+        icc_stream = Stream(pdf, icc_data)
+        icc_stream["/N"] = channels
 
-    icc_stream = Stream(pdf, icc_data)
-    icc_stream["/N"] = channels
+        output_intent = Dictionary(
+            Type=Name("/OutputIntent"),
+            OutputConditionIdentifier=pikepdf.String(icc_name),
+            DestOutputProfile=icc_stream,
+        )
 
-    output_intent = Dictionary(
-        Type=Name("/OutputIntent"),
-        OutputConditionIdentifier=pikepdf.String(icc_name),
-        DestOutputProfile=icc_stream,
-    )
+        pdf.Root["/OutputIntents"] = Array([pdf.make_indirect(output_intent)])
+        with pdf.open_metadata() as meta:
+            def m(key: str, val: object) -> None:
+                if val is not None:
+                    meta[key] = str(val)
 
-    pdf.Root["/OutputIntents"] = Array([pdf.make_indirect(output_intent)])
-    with pdf.open_metadata() as meta:
-        def m(key: str, val: object) -> None:
-            if val is not None:
-                meta[key] = str(val)
+            m("prism:title",               book.get("title"))
+            m("prism:subtitle",            book.get("sub-title"))
+            m("prism:section",             book.get("section"))
+            m("prism:teaser",              book.get("teaser"))
+            m("prism:category",            prop.get("genre"))
+            m("prism:isPartOf",            book.get("cycle"))
+            m("prism:seriesTitle",         book.get("series"))
+            m("prism:issueName",           book.get("volume-title"))
+            m("prism:volume",              book.get("volume"))
+            m("prism:url",                 publisher.get("url"))
+            m("prism:isbn",                prop.get("ISBN"))
+            m("prism:issn",                prop.get("ISSN"))
+            m("prism:doi",                 prop.get("DOI"))
+            m("prism:bookEdition",         version.get("edition"))
+            m("dc:rights",                 copyright.get("notice"))
+            m("prism:copyright",           copyright.get("notice"))
+            m("xmpRights:WebStatement",    author.get("url"))
+            m("xmpRights:Marked",          (
+                "True" if copyright.get("enabled") else None
+            ))
+            m("xmp:Nickname",              book.get("title-short"))
+            m("photoshop:AuthorsPosition", author.get("position"))
+            m("photoshop:CaptionWriter",   book.get("description-author"))
 
-        m("prism:title",               book.get("title"))
-        m("prism:subtitle",            book.get("sub-title"))
-        m("prism:section",             book.get("section"))
-        m("prism:teaser",              book.get("teaser"))
-        m("prism:category",            prop.get("genre"))
-        m("prism:isPartOf",            book.get("cycle"))
-        m("prism:seriesTitle",         book.get("series"))
-        m("prism:issueName",           book.get("volume-title"))
-        m("prism:volume",              book.get("volume"))
-        m("prism:url",                 publisher.get("url"))
-        m("prism:isbn",                prop.get("ISBN"))
-        m("prism:issn",                prop.get("ISSN"))
-        m("prism:doi",                 prop.get("DOI"))
-        m("prism:bookEdition",         version.get("edition"))
-        m("dc:rights",                 copyright.get("notice"))
-        m("prism:copyright",           copyright.get("notice"))
-        m("xmpRights:WebStatement",    author.get("url"))
-        m("xmpRights:Marked",          (
-            "True" if copyright.get("enabled") else None
-        ))
-        m("xmp:Nickname",              book.get("title-short"))
-        m("photoshop:AuthorsPosition", author.get("position"))
-        m("photoshop:CaptionWriter",   book.get("description-author"))
+            all_authors = (
+                _authors
+                if isinstance(_authors, list)
+                else [_authors]
+                )
+            author_names: list[str] = [
+                a["name"] for a in all_authors
+                if isinstance(a, dict) and isinstance(a.get("name"), str)
+            ]
+            if author_names:
+                meta["dc:creator"] = author_names
 
-        all_authors = _authors if isinstance(_authors, list) else [_authors]
-        author_names: list[str] = [
-            a["name"] for a in all_authors
-            if isinstance(a, dict) and isinstance(a.get("name"), str)
-        ]
-        if author_names:
-            meta["dc:creator"] = author_names
+        pdf.save(pdf_path)
 
-    pdf.save(pdf_path)
+    info("info.icc-applied", path=pdf_path)
 
-info("info.icc-applied", path=pdf_path)
+    if build.get("open-after-build", False):
+        CREATE_BREAKAWAY_FROM_JOB = 0x01000000
+        subprocess.Popen(
+            ["cmd", "/c", "start", "", str(pdf_path)],
+            shell=False,
+            creationflags=(
+                subprocess.DETACHED_PROCESS | CREATE_BREAKAWAY_FROM_JOB
+                ),
+        )
 
-if build.get("open-after-build", False):
-    CREATE_BREAKAWAY_FROM_JOB = 0x01000000
-    subprocess.Popen(
-        ["cmd", "/c", "start", "", str(pdf_path)],
-        shell=False,
-        creationflags=subprocess.DETACHED_PROCESS | CREATE_BREAKAWAY_FROM_JOB,
-    )
-
-out_info = pdf_info(pdf_path)
-write_log(raw_pdf_path, pdf_path, raw_info, out_info, std=pdf_standard_raw)
+    out_info = pdf_info(pdf_path)
+    write_log(raw_pdf_path, pdf_path, raw_info, out_info, std=pdf_version_raw)

@@ -1,10 +1,14 @@
 # output-file-name: Моя книга
+export-dir: export
 color-conversion: true
 open-after-build: false
+png-ppi: 300
 mode-default:
   ICC: sRGB_v4_ICC_preference_displayclass
-  pdf-standard: PDF 2.0
+  pdf-version: PDF 2.0
+  # pdf-validator: PDF/A-4
   # pages: 1,2,6-
-mode-print:
+mode-print: 
   ICC: PSOcoated_v3
-  pdf-standard: PDF 2.0
+  pdf-version: PDF 2.0
+  # pdf-validator: PDF/A-4
