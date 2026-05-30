@@ -139,24 +139,6 @@ ICC_DIR = BASE_DIR / "assets" / "ICC"
 MAIN_TYP = BASE_DIR / "main.typ"
 LOG_PATH = BASE_DIR / "build.log"
 
-
-def roman_to_int(s: str) -> int:
-    roman_map = {
-        'I': 1, 'V': 5, 'X': 10, 'L': 50,
-        'C': 100, 'D': 500, 'M': 1000,
-    }
-    total = 0
-    prev_value = 0
-    for char in reversed(s.upper()):
-        current_value = roman_map.get(char, 0)
-        if current_value < prev_value:
-            total -= current_value
-        else:
-            total += current_value
-        prev_value = current_value
-    return total
-
-
 NS_PREFIXES = {
     "http://prismstandard.org/namespaces/basic/1.0/",
     "http://purl.org/dc/elements/1.1/",
@@ -490,11 +472,7 @@ with pikepdf.open(pdf_path, allow_overwriting_input=True) as pdf:
         m("prism:isPartOf",            book.get("cycle"))
         m("prism:seriesTitle",         book.get("series"))
         m("prism:issueName",           book.get("volume-title"))
-        m("prism:volume",              (
-            roman_to_int(book["volume"])
-            if book.get("volume")
-            else None
-        ))
+        m("prism:volume",              book.get("volume"))
         m("prism:url",                 publisher.get("url"))
         m("prism:isbn",                prop.get("ISBN"))
         m("prism:issn",                prop.get("ISSN"))
