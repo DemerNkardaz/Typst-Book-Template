@@ -1,4 +1,4 @@
-#import "../../utils/main.typ": parse-parameters, parse-value, regex-rules
+#import "../../utils/lib.typ": parse-parameters, parse-value, regex-rules
 
 #let _data = yaml("../../../settings/layout.yml")
 #let _mode = sys.inputs.at("layout-mode", default: _data.at("mode"))

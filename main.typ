@@ -1,6 +1,4 @@
-#import "./code/plugin/lib.typ": *
-#import "./code/package/lib.typ": *
-#import "./code/components/lib.typ": *
+#import "./code/lib.typ": *
 
 #show: layout.init
 #show: style.use-par
@@ -28,8 +26,7 @@
 #chapter.title()
 #chapter.frontmatter()
 
-
-= #title() <start_count>	
+= #title() <start_count>
 
 #line(length: 100%)
 

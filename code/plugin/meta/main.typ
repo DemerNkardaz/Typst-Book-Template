@@ -1,4 +1,4 @@
-#import "../../utils/main.typ": resolve-path
+#import "../../utils/lib.typ": resolve-path
 
 #let _meta = yaml("../../../meta/book.yml")
 

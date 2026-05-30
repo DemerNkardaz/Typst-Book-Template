@@ -1,3 +1,5 @@
+#import "./format.typ" as format
+
 #let regex-rules = (
   w-s-unit: "^(\\d+)\\s*[×*]\\s*(\\d+)\\s*in\\s*(.+)$",
   color-fn: "^(rgb|cmyk|luma|oklab|oklch|color\\.linear-rgb|color\\.hsl|color\\.hsv)\\((.*)\\)$",

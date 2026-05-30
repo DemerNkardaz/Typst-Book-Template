@@ -1,4 +1,4 @@
-#import "../../utils/main.typ": parse-value, regex-rules
+#import "../../utils/lib.typ": parse-value, regex-rules
 
 #let _parse-dict(dict) = {
   let result = (:)

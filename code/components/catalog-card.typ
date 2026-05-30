@@ -1,4 +1,4 @@
-#import "../utils/main.typ": parse-value
+#import "../utils/lib.typ": parse-value
 
 ────────────────────────────────────────────────────────
 

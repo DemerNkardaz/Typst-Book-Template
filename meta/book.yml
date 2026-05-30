@@ -1,7 +1,9 @@
 book:
+  uuid: 7cd77664-675b-44a7-a861-6ad4cc61bc4b
+  id: my-book
   title: Моя книга
   title-short: Книга
-  volume: I
+  volume: 1
   volume-title: Наименование тома
   cycle: Наименование цикла
   series: Наименование серии
