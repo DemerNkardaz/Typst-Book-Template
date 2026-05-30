@@ -2,6 +2,7 @@ import io
 import subprocess
 import sys
 import yaml
+import tomllib
 from pathlib import Path
 import pikepdf
 from pikepdf import Dictionary, Array, Name, Stream
@@ -17,7 +18,53 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--mode")
 args = parser.parse_args()
 
-BASE_DIR = Path(__file__).parent
+BASE_DIR = Path(__file__).parent.parent
+
+
+# ── locale ───────────────────────────────────────
+
+TYPST_TOML = BASE_DIR / "typst.toml"
+MESSAGES_YML = BASE_DIR / "build" / "messages.yml"
+
+with open(TYPST_TOML, "rb") as f:
+    typst_config = tomllib.load(f)
+
+_lang = (
+    typst_config
+    .get("project-properties", {})
+    .get("prefered-user-language", "en")
+)
+
+with open(MESSAGES_YML, encoding="utf-8") as f:
+    _messages = yaml.safe_load(f)
+
+_locale = _messages.get(_lang) or _messages["en"]
+
+
+def msg(key: str, **kwargs) -> str:
+    """key = 'info.typst-done' | 'warnings.status-draft' | ..."""
+    category, name = key.split(".", 1)
+    template = _locale.get(category, {}).get(name, key)
+    return template.format(**kwargs) if kwargs else template
+
+
+def info(key: str, **kwargs) -> None:
+    print(msg(key, **kwargs))
+
+
+def succes(key: str, **kwargs) -> None:
+    print(f"\033[1;32m{msg(key, **kwargs)}\033[0m")
+
+
+def warn(key: str, **kwargs) -> None:
+    print(f"\033[1;33m{msg(key, **kwargs)}\033[0m")
+
+
+def error(key: str, **kwargs) -> str:
+    return msg(key, **kwargs)
+
+# ── end locale ─────────────────────────────────
+
 
 # ── asset check & download ───────────────────────
 
@@ -43,10 +90,15 @@ for folder_name, entries in register.items():
     for asset_name, url in entries.items():
         existing = next(folder_path.glob(f"{asset_name}.*"), None)
         if existing:
-            print(f"[assets] found {folder_name}/{existing.name}")
+            succes("info.assets-found", folder=folder_name, name=existing.name)
             continue
 
-        print(f"[assets] downloading {folder_name}/{asset_name} <- {url}")
+        info(
+            "info.assets-downloading",
+            folder=folder_name,
+            name=asset_name,
+            url=url
+            )
         is_zip = url.lower().endswith(".zip")
 
         if is_zip:
@@ -65,13 +117,13 @@ for folder_name, entries in register.items():
                         )
                         with zf.open(member) as src, open(target, "wb") as dst:
                             dst.write(src.read())
-                        print(f"[assets] extracted -> {target.name}")
+                        info("info.assets-extracted", name=target.name)
             tmp_path.unlink()
         else:
             suffix = Path(url).suffix
             target = folder_path / f"{asset_name}{suffix}"
             download_file(url, target)
-            print(f"[assets] saved -> {target.name}")
+            info("info.assets-saved", name=target.name)
 
 # ── end asset check ───────────────────────
 
@@ -225,7 +277,7 @@ def write_log(
     ])
 
     LOG_PATH.write_text(content + "\n", encoding="utf-8")
-    print(f"[log] {LOG_PATH}")
+    info("info.log-written", path=LOG_PATH)
 
 
 def convert_images(
@@ -311,10 +363,27 @@ with open(BUILD_YML, encoding="utf-8") as f:
     build = yaml.safe_load(f)
 
 with open(BOOK_YML, encoding="utf-8") as f:
-    book = yaml.safe_load(f)
+    meta = yaml.safe_load(f)
 
-with open(PROPERTIES_YML, encoding="utf-8") as f:
-    book_properties = yaml.safe_load(f)
+book = meta.get("book", {})
+publisher = meta.get("publisher", {})
+contributor = meta.get("contributor", {})
+version = meta.get("version", {})
+status = meta.get("status", {})
+date = meta.get("date", {})
+copyright = meta.get("copyright", {})
+prop = meta.get("property", {})
+
+_authors = meta.get("author", [])
+author = (
+    _authors[0]
+    if isinstance(_authors, list) and _authors
+    else _authors if isinstance(_authors, dict)
+    else {}
+)
+
+if status.get("stage") == "draft":
+    warn("warnings.status-draft")
 
 mode = args.mode or layout["mode"]
 mode_config = build[f"mode-{mode}"]
@@ -324,6 +393,7 @@ output_name = (
     if build.get("output-file-name")
     else book["title"]
 )
+
 icc_name = mode_config["ICC"]
 pdf_standard_raw = mode_config.get("pdf-standard")
 color_conversion = bool(build.get("color-conversion", False))
@@ -354,7 +424,7 @@ raw_pdf_path = BASE_DIR / "main.pdf"
 pdf_path = BASE_DIR / f"{output_name} [{mode}].pdf"
 icc_path = ICC_DIR / f"{icc_name}.icc"
 
-print(f"[typst] compiling {MAIN_TYP} → {raw_pdf_path}")
+info("info.typst-compiling", src=MAIN_TYP, dst=raw_pdf_path)
 typst_cmd = [
     "typst", "compile",
     str(MAIN_TYP), str(raw_pdf_path),
@@ -376,13 +446,13 @@ result = subprocess.run(
 
 if result.returncode != 0:
     print(result.stderr)
-    raise SystemExit("typst failed to compile")
-print("[typst] done")
+    raise SystemExit(error("errors.typst-failed"))
+succes("info.typst-done")
 
 raw_info = pdf_info(raw_pdf_path)
 
 pdf_standard_label = pdf_standard_raw or "—"
-print(f"[icc] using {icc_name} (mode: {mode}, standard: {pdf_standard_label})")
+info("info.icc-using", icc=icc_name, mode=mode, standard=pdf_standard_label)
 
 with open(icc_path, "rb") as f:
     icc_data = f.read()
@@ -395,7 +465,7 @@ shutil.copy2(raw_pdf_path, pdf_path)
 with pikepdf.open(pdf_path, allow_overwriting_input=True) as pdf:
     if color_conversion:
         n = convert_images(pdf, icc_data, channels)
-        print(f"[cc] images converted: {n}")
+        info("info.cc-converted", n=n)
 
     icc_stream = Stream(pdf, icc_data)
     icc_stream["/N"] = channels
@@ -416,7 +486,7 @@ with pikepdf.open(pdf_path, allow_overwriting_input=True) as pdf:
         m("prism:subtitle",            book.get("sub-title"))
         m("prism:section",             book.get("section"))
         m("prism:teaser",              book.get("teaser"))
-        m("prism:category",            book.get("genre"))
+        m("prism:category",            prop.get("genre"))
         m("prism:isPartOf",            book.get("cycle"))
         m("prism:seriesTitle",         book.get("series"))
         m("prism:issueName",           book.get("volume-title"))
@@ -425,24 +495,32 @@ with pikepdf.open(pdf_path, allow_overwriting_input=True) as pdf:
             if book.get("volume")
             else None
         ))
-        m("prism:url",                 book.get("publication-url"))
-        m("prism:isbn",                book_properties.get("ISBN"))
-        m("prism:issn",                book_properties.get("ISSN"))
-        m("prism:doi",                 book_properties.get("DOI"))
-        m("dc:rights",                 book.get("copyright-notice"))
-        m("prism:copyright",           book.get("copyright-notice"))
-        m("xmpRights:WebStatement",    book.get("author-url"))
+        m("prism:url",                 publisher.get("url"))
+        m("prism:isbn",                prop.get("ISBN"))
+        m("prism:issn",                prop.get("ISSN"))
+        m("prism:doi",                 prop.get("DOI"))
+        m("prism:bookEdition",         version.get("edition"))
+        m("dc:rights",                 copyright.get("notice"))
+        m("prism:copyright",           copyright.get("notice"))
+        m("xmpRights:WebStatement",    author.get("url"))
         m("xmpRights:Marked",          (
-            "True" if book.get("copyright") else None
+            "True" if copyright.get("enabled") else None
         ))
         m("xmp:Nickname",              book.get("title-short"))
-        m("photoshop:AuthorsPosition", book.get("author-position"))
+        m("photoshop:AuthorsPosition", author.get("position"))
         m("photoshop:CaptionWriter",   book.get("description-author"))
-        m("pdf:Producer",   book.get("description-author"))
+
+        all_authors = _authors if isinstance(_authors, list) else [_authors]
+        author_names: list[str] = [
+            a["name"] for a in all_authors
+            if isinstance(a, dict) and isinstance(a.get("name"), str)
+        ]
+        if author_names:
+            meta["dc:creator"] = author_names
 
     pdf.save(pdf_path)
 
-print(f"[icc] applied → {pdf_path}")
+info("info.icc-applied", path=pdf_path)
 
 if build.get("open-after-build", False):
     CREATE_BREAKAWAY_FROM_JOB = 0x01000000

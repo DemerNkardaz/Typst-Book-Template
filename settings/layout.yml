@@ -1,10 +1,5 @@
 mode: default
 
-meta:
-  format:
-    size: 70×108
-    fraction: 1/16
-
 default:
   page:
     # https://typst.app/docs/reference/layout/page/#parameters-paper

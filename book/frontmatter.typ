@@ -14,7 +14,7 @@
 )
 
 #catalog-card.new(name: "", (
-	"author":         meta.get("author"),
+	"author":         meta.author("name"),
 	"title":          meta.property("Бибилографическое описание").at(0),
 	"description":    meta.property("Аннотация").at(0),
 	"ISBN":           meta.property("ISBN"),
@@ -38,7 +38,7 @@
 				stroke: none,
 
 				[#meta.property("ISBN")],
-				[#sym.copyright #meta.get("author"), #meta.get("date.year")]
+				[#sym.copyright #meta.author("name"), #meta.date("year")]
 			)
 		]
 	]

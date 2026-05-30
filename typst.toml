@@ -11,3 +11,6 @@ categories = ["book", "layout"]
 [dependencies]
 rustycure = "0.2.0"
 rubby = "0.10.2"
+
+[project-properties]
+prefered-user-language = "ru"

@@ -14,7 +14,7 @@
 #place(
 	center,
 	[
-		#title[#meta.get("author")]
+		#title[#meta.author("name")]
 	]
 )
 
@@ -30,8 +30,8 @@
 #place(
 	bottom + center,
 	[
-		#meta.get("publisher")\
-		#meta.get("publisher-origin")
+		#meta.get("publisher.name")\
+		#meta.get("publisher.origin")
 		#v(2pt)
 		#meta.get("date.year")
 	]

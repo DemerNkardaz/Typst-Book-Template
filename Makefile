@@ -3,7 +3,7 @@
 all: build
 
 build:
-	python3 build.py --mode=$(m)
+	python3 build/build.py --mode=$(m)
 
 print:
-	python3 build.py --mode=print
+	python3 build/build.py --mode=print

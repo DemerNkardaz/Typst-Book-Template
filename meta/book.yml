@@ -1,37 +1,127 @@
-author: Иван Иванов
-author-url: http://example.com/
-author-position: Друг богатыря
-initials: И. Иванов
+book:
+  title: Моя книга
+  title-short: Книга
+  volume: I
+  volume-title: Наименование тома
+  cycle: Наименование цикла
+  series: Наименование серии
+  description: Моя афигенная книга
+  description-author: ~
+  archive: ~ # ссылка на исходники, например, гит-репозиторий
 
-title: Моя книга
-title-short: Книга
+dedication: Посвящается вкусным роллам
+epigraph:
+  text: Надежда — первый шаг на пути к разочарованию
+  author: Библиарий космодесанта
 
-description: Моя афигенная книга
-description-author: Илья Муромец
+audience:
+  age-rating: 18+ # 0+, 6+, 12+, 16+, 18+
+  target: adult # children, teen, adult, academic
 
-copyright: true
-copyright-notice: (с) Иван Иванов
+author:
+  - name: Иван Иванов
+    initials: И. Иванов
+    position: Друг богатыря
+    url: http://example.com/
+    email: ~
+    bio: ~
+    photo: ~
+    social:
+      telegram: ~
+      vk: ~
+# - name: Со-автор
 
-volume: I
-volume-title: Наименование тома
+publisher:
+  name: Издательство
+  origin: Москва
+  address: ул. Книжная, д. 1
+  email: publish@example.com
+  phone: +7 (495) 000-00-00
+  url: ~
+  country: RU # ISO 3166-1
+  imprint: ~
 
-cycle: Наименование цикла
-series: Наименование серии
+print:
+  pages: 500
+  circulation: 1000
+  paper: офсетная
+  binding: твёрдый
+  format: 70×108 1/16
 
-publisher: Издательство
-publisher-origin: Москва
-publication-url: http://example.com/
+status:
+  stage: draft # draft | review | final | published | archived
+  confidential: false
 
-version: 1.0.0
+version:
+  edition: 1 # номер издания (выходит раз в годы)
+  printing: 1 # номер тиража (новый тираж того же издания)
+  revision: 3 # ревизия файла внутри тиража (правки до печати)
+
+history:
+  - edition: 1
+    year: 2024
+    note: Первое издание
+  - edition: 2
+    year: 2026
+    note: Исправленное и дополненное
+
+contributor:
+  - role: editor
+    name: Пётр Петров
+  - role: translator
+    name: Анна Сидорова
+    language: en
+  - role: illustrator
+    name: Василий Васильев
+  - role: cover-designer
+    name: Мария Иванова
+  - role: proofreader
+    name: Олег Олегов
 
 date:
   year: 2026
   month: 11
   day: 11
+  published: ~
+  submitted: ~
+  signed: ~
 
-keywords: [Книга]
+copyright:
+  enabled: true
+  notice: © Иван Иванов
+  license: ARR # ARR (all rights reserved) | CC-BY | CC-BY-NC и т.д.
+  license-url: ~ # ссылка на текст лицензии если не ARR
 
-genre: жанр
+translation:
+  is-translation: false
+  source-language: ~ # если перевод — язык оригинала
+  source-title: ~ # название оригинала
+  source-author: ~
 
-language[ISO-639]: ru
-language: Русский
+property:
+  ISSN: 0000-0000
+  ISBN: 978-5-0000-0000-0
+  DOI: ~ # 10.XXXXX/XXXXX
+  UPC: ~ # штрихкод для розницы
+  LCCN: ~ # Library of Congress Control Number
+  genre: жанр
+  keywords: [Книга]
+  language[ISO-639]: ru
+  language: Русский
+  locale: ru-RU
+  # Custom properties
+  Библиографическая информация:
+    УДК: 821.161.1-31
+    ББК: 84-445
+    Авторский знак: И 20
+  Бибилографическое описание:
+    - "#(book.title), Том #(book.volume) «#(book.volume-title)»\u00A0:\u00A0#(property.genre) / #(author.initials) — #(publisher.origin)\u00A0:\u00A0#(publisher.name), #(date.year). — #(print.pages) с.\u00A0:\u00A0ил. — (#(book.series))."
+  Аннотация:
+    - |
+      С учётом сложившейся международной обстановки, консультация с широким активом прекрасно подходит для реализации укрепления моральных ценностей. Банальные, но неопровержимые выводы, а также диаграммы связей являются только методом политического участия и ограничены исключительно образом мышления. Но ключевые особенности структуры проекта могут быть ассоциативно распределены по отраслям.
+
+      Но дальнейшее развитие различных форм деятельности прекрасно подходит для реализации прогресса профессионального сообщества. В целом, конечно, выбранный нами инновационный путь требует анализа переосмысления внешнеэкономических политик. Но некоторые особенности внутренней политики набирают популярность среди определенных слоев населения, а значит, должны быть в равной степени предоставлены сами себе. С учётом сложившейся международной обстановки, дальнейшее развитие различных форм деятельности, а также свежий взгляд на привычные вещи — безусловно открывает новые горизонты для системы обучения кадров, соответствующей насущным потребностям.
+
+asset:
+  - name: Логотип серии
+    path: /assets/logo-series.svg

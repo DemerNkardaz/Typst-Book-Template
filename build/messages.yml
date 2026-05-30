@@ -1,0 +1,34 @@
+# prettier-ignore
+en:
+  info:
+    assets-found:       "[assets] ✅ {folder}/{name}"
+    assets-downloading: "[assets] ⬇️ {folder}/{name} <- {url}"
+    assets-extracted:   "[assets] 📦 extracted -> {name}"
+    assets-saved:       "[assets] ✅ saved -> {name}"
+    typst-compiling:    "[typst]  ⚙️  compiling {src} -> {dst}"
+    typst-done:         "[typst]  ✅ done"
+    icc-using:          "[ICC]    🎨 using {icc} (mode: {mode}, standard: {standard})"
+    icc-applied:        "[ICC]    🎨 applied -> {path}"
+    cc-converted:       "[cc]     🖼️  images converted: {n}"
+    log-written:        "[log]    📝 {path}"
+  warnings:
+    status-draft:       "[status] ⚠️  Attention: project is being built with status “Draft”"
+  errors:
+    typst-failed:       "[typst]  ❌ typst failed to compile"
+
+ru:
+  info:
+    assets-found:       "[ассеты] ✅ {folder}/{name}"
+    assets-downloading: "[ассеты] ⬇️ {folder}/{name} <- {url}"
+    assets-extracted:   "[ассеты] 📦 распакован -> {name}"
+    assets-saved:       "[ассеты] ✅ сохранён -> {name}"
+    typst-compiling:    "[typst]  ⚙️  компиляция {src} -> {dst}"
+    typst-done:         "[typst]  ✅ готово"
+    icc-using:          "[ICC]    🎨 используется {icc} (режим: {mode}, стандарт: {standard})"
+    icc-applied:        "[ICC]    🎨 применён -> {path}"
+    cc-converted:       "[cc]     🖼️  конвертировано изображений: {n}"
+    log-written:        "[log]    📝 {path}"
+  warnings:
+    status-draft:       "[статус] ⚠️  Обратите внимание: собирается проект со статусом «Черновик»"
+  errors:
+    typst-failed:       "[typst]  ❌ typst не смог скомпилировать проект"

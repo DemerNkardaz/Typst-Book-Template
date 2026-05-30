@@ -10,21 +10,26 @@
 #show: typography.apply
 
 #set document(
-	title: meta.get("title"),
-	author: meta.get("author"),
-	description: meta.get("description"),
-	keywords: meta.get("keywords")
+	title: meta.book("title"),
+	author: meta.author("name"),
+	description: meta.book("description"),
+	keywords: meta.property("keywords")
 )
 
-#set text(lang: meta.get("language[ISO-639]"))
+#set text(lang: meta.property("language[ISO-639]"))
+
+#show: word-count
 
 /// ========= BOOK CONTENT START ========= ///
+
+Всего слов: #total-words
 
 #chapter.pre-title()
 #chapter.title()
 #chapter.frontmatter()
 
-= #title() <start_count>
+
+= #title() <start_count>	
 
 #line(length: 100%)
 

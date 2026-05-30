@@ -5,7 +5,7 @@
       "name": "build",
       "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}/build.py",
+      "program": "${workspaceFolder}/build/build.py",
       "cwd": "${workspaceFolder}",
       "python": "py"
     }
