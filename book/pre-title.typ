@@ -13,7 +13,7 @@
 
 		#text(size: 16pt)[#meta.get("book.title")]
 
-		#text(size: 12pt)[Том  #utils.format.to-roman(meta.get("book.volume"))]
+		#text(size: 12pt)[Том  #numbering("I", meta.get("book.volume"))]
 	]
 )
 
