@@ -14,7 +14,10 @@
 	keywords: meta.property("keywords")
 )
 
-#set text(lang: meta.property("language[ISO-639]"))
+#set text(
+	lang: meta.property("locale").slice(0, 2),
+	region: meta.property("locale").slice(3)
+)
 
 #show: word-count
 

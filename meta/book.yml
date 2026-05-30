@@ -1,6 +1,6 @@
 book:
   uuid: 7cd77664-675b-44a7-a861-6ad4cc61bc4b
-  id: my-book
+  id: ~ # my-book
   title: Моя книга
   title-short: Книга
   volume: 1
@@ -9,7 +9,7 @@ book:
   series: Наименование серии
   description: Моя афигенная книга
   description-author: ~
-  archive: ~ # ссылка на исходники, например, гит-репозиторий
+  archive: ~ # URL to source, git repository as example
 
 dedication: Посвящается вкусным роллам
 epigraph:
@@ -17,21 +17,27 @@ epigraph:
   author: Библиарий космодесанта
 
 audience:
-  age-rating: 18+ # 0+, 6+, 12+, 16+, 18+
-  target: adult # children, teen, adult, academic
+  age-rating: ~ # 0+, 6+, 12+, 16+, 18+
+  target: ~ # children, teen, adult, academic
 
 author:
   - name: Иван Иванов
-    initials: И. Иванов
-    position: Друг богатыря
-    url: http://example.com/
+    initials: ~
+    position: ~
+    url: ~
     email: ~
     bio: ~
     photo: ~
     social:
       telegram: ~
       vk: ~
-# - name: Со-автор
+# - name: Со-автор | Co-author
+#   initials: ~
+#   position: ~
+#   url: ~
+#   email: ~
+#   bio: ~
+#   photo: ~
 
 publisher:
   name: Издательство
@@ -45,7 +51,7 @@ publisher:
 
 print:
   pages: 500
-  circulation: 1000
+  circulation: ~
   paper: офсетная
   binding: твёрдый
   format: 70×108 1/16
@@ -55,30 +61,18 @@ status:
   confidential: false
 
 version:
-  edition: 1 # номер издания (выходит раз в годы)
-  printing: 1 # номер тиража (новый тираж того же издания)
-  revision: 3 # ревизия файла внутри тиража (правки до печати)
+  edition: 1
+  printing: 1
+  revision: 3
 
 history:
-  - edition: 1
-    year: 2024
-    note: Первое издание
-  - edition: 2
-    year: 2026
-    note: Исправленное и дополненное
+  - edition: ~
+    year: ~
+    note: ~
 
 contributor:
-  - role: editor
-    name: Пётр Петров
-  - role: translator
-    name: Анна Сидорова
-    language: en
-  - role: illustrator
-    name: Василий Васильев
-  - role: cover-designer
-    name: Мария Иванова
-  - role: proofreader
-    name: Олег Олегов
+  - role: ~
+    name: ~
 
 date:
   year: 2026
@@ -90,26 +84,24 @@ date:
 
 copyright:
   enabled: true
-  notice: © Иван Иванов
-  license: ARR # ARR (all rights reserved) | CC-BY | CC-BY-NC и т.д.
-  license-url: ~ # ссылка на текст лицензии если не ARR
+  notice: ~
+  license: ~ # ARR (all rights reserved) | CC-BY | CC-BY-NC и т.д.
+  license-url: ~ # url to license text if not ARR
 
 translation:
   is-translation: false
-  source-language: ~ # если перевод — язык оригинала
-  source-title: ~ # название оригинала
+  source-language: ~
+  source-title: ~
   source-author: ~
 
 property:
   ISSN: 0000-0000
   ISBN: 978-5-0000-0000-0
   DOI: ~ # 10.XXXXX/XXXXX
-  UPC: ~ # штрихкод для розницы
+  UPC: ~ # Barcode
   LCCN: ~ # Library of Congress Control Number
-  genre: жанр
-  keywords: [Книга]
-  language[ISO-639]: ru
-  language: Русский
+  genre: ~
+  keywords: []
   locale: ru-RU
   # Custom properties
   Библиографическая информация:

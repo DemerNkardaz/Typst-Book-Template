@@ -17,26 +17,38 @@ default  = ""
 [[fields]]
 id       = "book-lang"
 type     = "select"
-options  = ["ru", "en", "de"]
-default  = "ru"
+required = true
+default  = "en-US"
+
+[[fields]]
+id       = "book-genre"
+type     = "text"
+required = false
+default  = ""
 
 [messages.ru]
 book-name.prompt      = "Введите название книги"
 book-name.placeholder = "Книга без названия"
 book-author.prompt    = "Введите имя автора"
 book-author.placeholder = "Аноним"
-book-lang.prompt      = "Выберите язык книги в формате ISO-639"
+book-lang.prompt      = "Выберите локализацию книги в формате ISO-639, ISO-3166"
+book-genre.prompt     = "Введите жанр книги"
 
 [messages.en]
 book-name.prompt      = "Enter book title"
 book-name.placeholder = "Untitled book"
 book-author.prompt    = "Enter author name"
 book-author.placeholder = "Anonymous"
-book-lang.prompt      = "Select book language in ISO-639 format"
+book-lang.prompt      = "Select book locale  in ISO-639, ISO-3166 format"
+book-genre.prompt     = "Enter book genre"
 
 [[targets]]
 file   = "/meta/book.yml"
 format = "yaml"
+
+[[targets.fields]]
+value = "${UUID}"
+key   = "book.uuid"
 
 [[targets.fields]]
 field = "book-name"
@@ -48,4 +60,12 @@ key   = "author[0].name"
 
 [[targets.fields]]
 field = "book-lang"
-key   = "property.language[ISO-639]"
+key   = "property.locale"
+
+[[targets.fields]]
+value = "© {book-author}"
+key   = "copyright.notice"
+
+[[targets.fields]]
+field = "book-genre"
+key   = "property.genre"
