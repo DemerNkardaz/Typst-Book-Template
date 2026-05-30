@@ -1,0 +1,50 @@
+[meta]
+yal-min-version = "0.1.0"
+
+[[fields]]
+id       = "book-name"
+type     = "text"
+required = true
+default  = "{placeholder}"
+
+[[fields]]
+id       = "book-author"
+type     = "text"
+required = false
+default  = ""
+
+[[fields]]
+id       = "book-lang"
+type     = "select"
+options  = ["ru", "en", "de"]
+default  = "ru"
+
+[messages.ru]
+book-name.prompt      = "Введите название книги"
+book-name.placeholder = "Книга без названия"
+book-author.prompt    = "Введите имя автора"
+book-author.placeholder = "Аноним"
+book-lang.prompt      = "Выберите язык книги в формате ISO-639"
+
+[messages.en]
+book-name.prompt      = "Enter book title"
+book-name.placeholder = "Untitled book"
+book-author.prompt    = "Enter author name"
+book-author.placeholder = "Anonymous"
+book-lang.prompt      = "Select book language in ISO-639 format"
+
+[[targets]]
+file   = "/meta/book.yml"
+format = "yaml"
+
+[[targets.fields]]
+field = "book-name"
+key   = "book.title"
+
+[[targets.fields]]
+field = "book-author"
+key   = "author[0].name"
+
+[[targets.fields]]
+field = "book-lang"
+key   = "property.language[ISO-639]"
