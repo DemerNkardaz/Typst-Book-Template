@@ -3,11 +3,5 @@
 В моей утилите [YAL](https://github.com/DemerNkardaz/YAL) это шаблон книги по умолчанию. Инициализировать проект книги можно следующей командой:
 
 ```bash
-yal create boook
-```
-
-Обновить шаблон можно командой:
-
-```bash
-yal update book
+yal create book
 ```

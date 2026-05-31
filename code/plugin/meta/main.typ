@@ -52,6 +52,7 @@
   }
 }
 
+
 #let get          = _make-getter(none)
 #let property     = _make-getter("property")
 #let book         = _make-getter("book")
@@ -160,3 +161,30 @@
     result
   })
 }
+
+
+#let _make-has(prefix) = {
+  (name) => {
+    let path = if prefix != none {
+      prefix + "." + name
+    } else {
+      name
+    }
+
+    resolve-path(_meta, path) != none
+  }
+}
+
+#let has          = _make-has(none)
+#let property-has = _make-has("property")
+#let book-has     = _make-has("book")
+#let publisher-has = _make-has("publisher")
+#let contributor-has = _make-has("contributor")
+#let version-has  = _make-has("version")
+#let date-has     = _make-has("date")
+#let copyright-has = _make-has("copyright")
+#let audience-has = _make-has("audience")
+#let print-has    = _make-has("print")
+#let status-has   = _make-has("status")
+#let translation-has = _make-has("translation")
+#let epigraph-has = _make-has("epigraph")

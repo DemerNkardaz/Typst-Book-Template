@@ -2,8 +2,7 @@
 yal-min-version = "0.1.1"
 post-commands = [
 	"git init",
-	"git add .",
-	"git commit -m 'Initial commit'"
+	"pip install pyyaml pikepdf pillow"
 ]
 exclude = [
 	"typst.toml",
@@ -79,4 +78,37 @@ key   = "copyright.notice"
 
 [[targets.fields]]
 field = "book-genre"
+fallback = "${NULL}"
 key   = "property.genre"
+
+# [[targets.fields]]
+# value = "${NULL}"
+# key   = "book.series"
+
+# [[targets.fields]]
+# value = "${NULL}"
+# key   = "book.cycle"
+
+# [[targets.fields]]
+# value = "${NULL}"
+# key   = "book.volume-title"
+
+# [[targets.fields]]
+# value = "${NULL}"
+# key   = "book.volume"
+
+# [[targets.fields]]
+# value = "${NULL}"
+# key   = "book.description"
+
+[[targets.fields]]
+value = "${YEAR}"
+key   = "date.year"
+
+[[targets.fields]]
+value = "${MONTH}"
+key   = "date.month"
+
+[[targets.fields]]
+value = "${DAY}"
+key   = "date.day"
