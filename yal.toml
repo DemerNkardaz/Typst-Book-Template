@@ -1,71 +1,15 @@
-[meta]
-yal-min-version = "0.1.0"
+[origin]
+template = ""
+template-version = ""
+created-at = ""
+yal-version = ""
 
-[[fields]]
-id             = "book-name"
-type           = "text"
-required       = true
-default        = "{placeholder}"
-is-folder-name = true
+[[command]]
+name = "make"
+arguments = {--mode = []}
+script = "/build/build.py"
+exec = "python3"
 
-[[fields]]
-id       = "book-author"
-type     = "text"
-required = false
-default  = ""
-
-[[fields]]
-id       = "book-lang"
-type     = "select"
-required = true
-default  = "en-US"
-
-[[fields]]
-id       = "book-genre"
-type     = "text"
-required = false
-default  = ""
-
-[messages.ru]
-book-name.prompt      = "Введите название книги"
-book-name.placeholder = "Книга без названия"
-book-author.prompt    = "Введите имя автора"
-book-author.placeholder = "Аноним"
-book-lang.prompt      = "Выберите локализацию книги в формате ISO-639, ISO-3166"
-book-genre.prompt     = "Введите жанр книги"
-
-[messages.en]
-book-name.prompt      = "Enter book title"
-book-name.placeholder = "Untitled book"
-book-author.prompt    = "Enter author name"
-book-author.placeholder = "Anonymous"
-book-lang.prompt      = "Select book locale  in ISO-639, ISO-3166 format"
-book-genre.prompt     = "Enter book genre"
-
-[[targets]]
-file   = "/meta/book.yml"
-format = "yaml"
-
-[[targets.fields]]
-value = "${UUID}"
-key   = "book.uuid"
-
-[[targets.fields]]
-field = "book-name"
-key   = "book.title"
-
-[[targets.fields]]
-field = "book-author"
-key   = "author[0].name"
-
-[[targets.fields]]
-field = "book-lang"
-key   = "property.locale"
-
-[[targets.fields]]
-value = "© {book-author}"
-key   = "copyright.notice"
-
-[[targets.fields]]
-field = "book-genre"
-key   = "property.genre"
+[[command]]
+name = "make print"
+macros = "make --mode=print"
