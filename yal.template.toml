@@ -1,11 +1,16 @@
 [meta]
+yal-min-version = "0.1.1"
+post-commands = [
+	"git init",
+	"git add .",
+	"git commit -m 'Initial commit'"
+]
 exclude = [
 	"typst.toml",
 	"README.md",
 	"LICENSE",
 	"TODO.md"
 ]
-yal-min-version = "0.1.1"
 
 [[fields]]
 id             = "book-name"
