@@ -1,5 +1,10 @@
 #import "./code/lib.typ": *
 
+#set text(
+	lang: meta.property("locale").slice(0, 2),
+	region: meta.property("locale").slice(3)
+)
+
 #show: layout.init
 #show: style.use-par
 #show: style.use-text
@@ -13,12 +18,6 @@
 	description: meta.book("description"),
 	keywords: meta.property("keywords")
 )
-
-#set text(
-	lang: meta.property("locale").slice(0, 2),
-	region: meta.property("locale").slice(3)
-)
-
 #show: word-count
 
 /// ========= BOOK CONTENT START ========= ///

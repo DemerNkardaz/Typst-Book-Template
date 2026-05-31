@@ -75,7 +75,7 @@
     let text-path = if text-name == "" {
       "../../style/text.yml"
     } else {
-      "../../style/text [" + text-name + "].yml"
+      "../../style/text/" + text-name + ".yml"
     }
     let td = _parse-dict(yaml(text-path))
     body = { set text(..td); body }
@@ -84,7 +84,7 @@
     let par-path = if par-name == "" {
       "../../style/paragraph.yml"
     } else {
-      "../../style/paragraph [" + par-name + "].yml"
+      "../../style/paragraph/" + par-name + ".yml"
     }
     let pd = _parse-dict(yaml(par-path))
     body = { set par(..pd); body }
@@ -244,7 +244,7 @@
   let path = if name == "" {
     "../../style/catalog-card.yml"
   } else {
-    "../../style/catalog-card [" + name + "].yml"
+    "../../style/catalog-card/" + name + ".yml"
   }
 
   let config = yaml(path)
@@ -269,7 +269,7 @@
     let text-path = if text-name == "" {
       "../../style/text.yml"
     } else {
-      "../../style/text [" + text-name + "].yml"
+      "../../style/text/" + text-name + ".yml"
     }
     let td = _parse-dict(yaml(text-path))
     inner = { set text(..td); inner }
@@ -279,7 +279,7 @@
     let par-path = if par-name == "" {
       "../../style/paragraph.yml"
     } else {
-      "../../style/paragraph [" + par-name + "].yml"
+      "../../style/paragraph/" + par-name + ".yml"
     }
     let pd = _parse-dict(yaml(par-path))
     inner = { set par(..pd); inner }

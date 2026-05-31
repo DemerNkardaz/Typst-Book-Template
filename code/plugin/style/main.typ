@@ -22,7 +22,7 @@
     let path = if name == "" {
       "../../../style/paragraph.yml"
     } else {
-      "../../../style/paragraph [" + name + "].yml"
+      "../../../style/paragraph/" + name + ".yml"
     }
     let data = _parse-dict(yaml(path))
     set par(..data)
@@ -33,7 +33,7 @@
     let path = if name == "" {
       "../../../style/text.yml"
     } else {
-      "../../../style/text [" + name + "].yml"
+      "../../../style/text/" + name + ".yml"
     }
     let data = _parse-dict(yaml(path))
     set text(..data)
@@ -55,7 +55,7 @@
   let path = if name == "" {
     "../../../style/paragraph.yml"
   } else {
-    "../../../style/paragraph [" + name + "].yml"
+    "../../../style/paragraph/" + name + ".yml"
   }
 
   let data = _parse-dict(yaml(path))
@@ -69,7 +69,7 @@
   let path = if name == "" {
     "../../../style/text.yml"
   } else {
-    "../../../style/text [" + name + "].yml"
+    "../../../style/text/" + name + ".yml"
   }
 
   let data = _parse-dict(yaml(path))
