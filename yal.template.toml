@@ -32,6 +32,14 @@ type     = "select"
 required = true
 default  = "en-US"
 
+[messages]
+book-name.prompt      = "Enter book title"
+book-name.placeholder = "Untitled book"
+book-author.prompt    = "Enter author name"
+book-author.placeholder = "Anonymous"
+book-lang.prompt      = "Select book locale  in ISO-639, ISO-3166 format"
+book-genre.prompt     = "Enter book genre"
+
 [messages.ru]
 book-name.prompt      = "Введите название книги"
 book-name.placeholder = "Книга без названия"
@@ -39,14 +47,6 @@ book-author.prompt    = "Введите имя автора"
 book-author.placeholder = "Аноним"
 book-lang.prompt      = "Выберите локализацию книги в формате ISO-639, ISO-3166"
 book-genre.prompt     = "Введите жанр книги"
-
-[messages.en]
-book-name.prompt      = "Enter book title"
-book-name.placeholder = "Untitled book"
-book-author.prompt    = "Enter author name"
-book-author.placeholder = "Anonymous"
-book-lang.prompt      = "Select book locale  in ISO-639, ISO-3166 format"
-book-genre.prompt     = "Enter book genre"
 
 [[targets]]
 file   = "/meta/book.yml"
