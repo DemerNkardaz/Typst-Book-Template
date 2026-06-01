@@ -13,7 +13,7 @@
 	[#text(weight: 700)[#meta.property("Библиографическая информация.Авторский знак")]]
 )
 
-#catalog-card.new(name: "", (
+#component.catalog-card.new(name: "", (
 	"author":         meta.author("name"),
 	"title":          meta.property("Бибилографическое описание").at(0),
 	"description":    meta.property("Аннотация").at(0),
