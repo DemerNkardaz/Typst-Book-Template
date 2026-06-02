@@ -5,6 +5,7 @@ post-commands = [
 	"pip install pyyaml pikepdf pillow"
 ]
 exclude = [
+	".flake8",
 	"typst.toml",
 	"README.md",
 	"LICENSE",

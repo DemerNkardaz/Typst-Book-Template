@@ -104,10 +104,9 @@ property:
   keywords: []
   locale: ru-RU
   # Custom properties
-  Библиографическая информация:
-    УДК: 821.161.1-31
-    ББК: 84-445
-    Авторский знак: И 20
+  УДК: 821.161.1-31
+  ББК: 84-445
+  Авторский знак: И 20
   Бибилографическое описание:
     - "#(book.title), Том #(book.volume) «#(book.volume-title)»\u00A0:\u00A0#(property.genre) / #(author.initials) — #(publisher.origin)\u00A0:\u00A0#(publisher.name), #(date.year). — #(print.pages) с.\u00A0:\u00A0ил. — (#(book.series))."
   Аннотация:

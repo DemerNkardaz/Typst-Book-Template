@@ -13,11 +13,3 @@ exec = "python3"
 [[command]]
 name = "make print"
 macros = "make --mode=print"
-
-[[dependency]]
-type = "pip install"
-list = [
-	"pyyaml",
-	"pikepdf",
-	"pillow"
-]
