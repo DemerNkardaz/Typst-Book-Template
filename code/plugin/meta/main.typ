@@ -39,19 +39,17 @@
 }
 
 #let _make-getter(prefix) = {
-  (name) => {
+  (name, fallback: none) => {
     let path = if prefix != none { prefix + "." + name } else { name }
     let val = resolve-path(_meta, path)
     if val != none {
-      if type(val) == array {
-        val.map(_interpolate)
-      } else {
-        _interpolate(val)
-      }
+      if type(val) == array { val.map(_interpolate) }
+      else { _interpolate(val) }
+    } else {
+      fallback
     }
   }
 }
-
 
 #let get          = _make-getter(none)
 #let property     = _make-getter("property")
@@ -67,20 +65,22 @@
 #let translation  = _make-getter("translation")
 #let epigraph     = _make-getter("epigraph")
 
-#let author = (name) => {
+#let author = (name, fallback: none) => {
   let val = resolve-path(_meta, "author")
-  if val == none { return none }
+  if val == none { return fallback }
   let node = if type(val) == array {
-    if val.len() == 0 { return none }
+    if val.len() == 0 { return fallback }
     val.first()
   } else {
     val
   }
-  if type(node) != dictionary { return none }
+  if type(node) != dictionary { return fallback }
   let field = node.at(name, default: none)
   if field != none {
     if type(field) == array { field.map(_interpolate) }
     else { _interpolate(field) }
+  } else {
+    fallback
   }
 }
 

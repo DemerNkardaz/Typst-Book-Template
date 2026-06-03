@@ -6,3 +6,4 @@
 #import "./chapter/main.typ" as chapter
 #import "./nobreak/main.typ" as nobreak
 #import "./hyphenation/main.typ" as hyphenation
+#import "./locale/main.typ" as locale
