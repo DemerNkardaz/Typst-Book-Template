@@ -1,3 +1,4 @@
+// Built-in plugins module, do not modify it manually
 #import "./meta/main.typ" as meta
 #import "./layout/main.typ" as layout
 #import "./template/main.typ" as template

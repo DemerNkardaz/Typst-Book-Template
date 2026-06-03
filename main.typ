@@ -17,11 +17,24 @@
 #show: typography.apply
 
 #set document(
-	title: meta.book("title", fallback: locale.get("fallback.title")),
-	author: meta.author("name", fallback: locale.get("fallback.author")),
-	description: meta.book("description", fallback: ""),
-	keywords: meta.property("keywords", fallback: [])
+	title: meta.book(
+		"title",
+		fallback: locale.get("fallback.title")
+	),
+	author: meta.author(
+		"name",
+		fallback: locale.get("fallback.author")
+	),
+	description: meta.book(
+		"description",
+		fallback: ""
+		),
+	keywords: meta.property(
+		"keywords",
+		fallback: []
+	)
 )
+
 #show: word-count
 
 /// ========= BOOK CONTENT START ========= ///
