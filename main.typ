@@ -1,8 +1,12 @@
 #import "./code/lib.typ": *
 
+#let document-locale = utils.iso-parse(
+	meta.property("locale", fallback: "en-US")
+)
+
 #set text(
-	lang: meta.property("locale", fallback: "en-US").slice(0, 2),
-	region: meta.property("locale", fallback: "en-US").slice(3)
+	lang: document-locale.at("iso639"),
+	region: document-locale.at("iso3166")
 )
 
 #show: layout.init

@@ -1,0 +1,214 @@
+# prettier-ignore
+title: Typst Text Configuration
+type: object
+additionalProperties: false
+
+properties:
+  font:
+    description: A font family descriptor or priority list of font family descriptors.
+    oneOf:
+      - type: string
+      - type: array
+        items:
+          type: string
+      - type: object
+
+  fallback:
+    description: Whether to allow last resort font fallback when the primary font list contains no match. This lets Typst search through all available fonts for the most similar one that has the necessary glyphs.
+    type: boolean
+
+  style:
+    description: The desired font style.
+    type: string
+    enum: [normal, italic, oblique]
+
+  weight:
+    description: The desired thickness of the font's glyphs. Accepts an integer between 100 and 900 or one of the predefined weight names.
+    oneOf:
+      - type: integer
+        minimum: 100
+        maximum: 900
+      - type: string
+        enum: [thin, ultra-light, light, regular, medium, semi-bold, bold, ultra-bold, black]
+
+  stretch:
+    description: The desired width of the glyphs. Accepts a ratio between 50% and 200%.
+    type: string
+    pattern: ^[0-9]+%$
+
+  size:
+    description: "The size of the glyphs. This value forms the basis of the em unit: 1em is equivalent to the font size."
+    type: string
+    pattern: ^[0-9]+(\.[0-9]+)?(pt|em|cm|mm|in)$
+
+  fill:
+    description: The glyph fill paint.
+    oneOf:
+      - type: string
+      - type: object # Для сложных структур градиента/узора
+
+  stroke:
+    description: How to stroke the text.
+    oneOf:
+      - type: string
+        enum: [none]
+      - type: string
+        pattern: ^[0-9]+(\.[0-9]+)?(pt|em|cm|mm|in)$ # Только длина
+      - type: string # Только цвет (например, #000000)
+      - type: object # Словарь параметров обводки или градиент
+
+  tracking:
+    description: The amount of space that should be added between characters.
+    type: string
+    pattern: ^-?[0-9]+(\.[0-9]+)?(pt|em|cm|mm|in)$
+
+  spacing:
+    description: The amount of space between words.
+    type: string
+    pattern: ^[0-9]+(\.[0-9]+)?(pt|em|cm|mm|in|%)$
+
+  cjk-latin-spacing:
+    description: Whether to automatically insert spacing between CJK and Latin characters.
+    type: string
+    enum: [none, auto]
+
+  baseline:
+    description: An amount to shift the text baseline by.
+    type: string
+    pattern: ^-?[0-9]+(\.[0-9]+)?(pt|em|cm|mm|in)$
+
+  overhang:
+    description: Whether certain glyphs can hang over into the margin in justified text. This can make justification visually more pleasing.
+    type: boolean
+
+  top-edge:
+    description: The top end of the conceptual frame around the text used for layout and positioning. This affects the size of containers that hold text.
+    oneOf:
+      - type: string
+        enum: [ascender, cap-height, x-height, baseline, bounds]
+      - type: string
+        pattern: ^[0-9]+(\.[0-9]+)?(pt|em|cm|mm|in)$
+
+  bottom-edge:
+    description: The bottom end of the conceptual frame around the text used for layout and positioning. This affects the size of containers that hold text
+    oneOf:
+      - type: string
+        enum: [descender, baseline, bounds]
+      - type: string
+        pattern: ^[0-9]+(\.[0-9]+)?(pt|em|cm|mm|in)$
+
+  lang:
+    description: An ISO 639-1/2/3 language code.
+    type: string
+    pattern: ^[a-z]{2,3}$
+    minLength: 2
+    maxLength: 3
+
+  region:
+    description: An ISO 3166-1 alpha-2 region code.
+    oneOf:
+      - type: string
+        enum: [none]
+      - type: string
+        pattern: ^[A-Z]{2}$
+        minLength: 2
+        maxLength: 2
+
+  script:
+    description: The OpenType writing script.
+    oneOf:
+      - type: string
+        enum: [auto]
+      - type: string
+        length: 4
+
+  dir:
+    description: The dominant direction for text and inline objects
+    oneOf:
+      - type: string
+        enum: [auto]
+      - type: string
+        enum: [ltr, rtl, ttb, btt]
+
+  hyphenate:
+    description: Whether to hyphenate text to improve line breaking. When auto, text will be hyphenated if and only if justification is enabled.
+    oneOf:
+      - type: string
+        enum: [auto]
+      - type: boolean
+
+  costs:
+    description: The “cost” of various choices when laying out text.
+    type: object
+
+  kerning:
+    description: Whether to apply kerning.
+    type: boolean
+
+  alternates:
+    description: Whether to apply stylistic alternates.
+    type: boolean
+
+  stylistic-set:
+    description: Which stylistic sets to apply.
+    oneOf:
+      - type: string
+        enum: [none]
+      - type: integer
+        minimum: 1
+        maximum: 20
+      - type: array
+        items:
+          type: integer
+          minimum: 1
+          maximum: 20
+
+  ligatures:
+    description: Whether standard ligatures are active.
+    type: boolean
+
+  discretionary-ligatures:
+    description: Whether ligatures that should be used sparingly are active.
+    type: boolean
+
+  historical-ligatures:
+    description: Whether historical ligatures are active.
+    type: boolean
+
+  number-type:
+    description: Which kind of numbers / figures to select. When set to auto, the default numbers for the font are used.
+    oneOf:
+      - type: string
+        enum: [auto]
+      - type: string
+        enum: [lining, old-style]
+
+  number-width:
+    description: The width of numbers / figures. When set to auto, the default numbers for the font are used.
+    oneOf:
+      - type: string
+        enum: [auto]
+      - type: string
+        enum: [proportional, tabular]
+
+  slashed-zero:
+    description: Whether to have a slash through the zero glyph. Setting this to true enables the OpenType zero font feature.
+    type: boolean
+
+  fractions:
+    description: Whether to turn numbers into fractions. Setting this to true enables the OpenType frac font feature.
+    type: boolean
+
+  features:
+    description: Raw OpenType features to apply.
+    oneOf:
+      - type: array
+        items:
+          type: string
+      - type: object
+
+  body:
+    description: Content in which all text is styled according to the other arguments.
+    oneOf:
+      - type: string
+      - type: object

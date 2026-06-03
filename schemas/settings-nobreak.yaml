@@ -1,0 +1,26 @@
+title: No-Break Dictionary
+type: object
+required:
+  - options
+  - words
+additionalProperties: false
+
+properties:
+  options:
+    type: object
+    required:
+      - case-sensitive
+    additionalProperties: false
+    properties:
+      case-sensitive:
+        type: boolean
+        description: Match words with case sensitivity enabled.
+
+  words:
+    type: array
+    description: List of words that must not be broken.
+    items:
+      type: string
+      description: >
+        Word pattern. Use “*” as a wildcard suffix.
+        Example: Shōgun* matches Shōgun, Shōguns, Shōgunate.

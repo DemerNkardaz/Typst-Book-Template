@@ -1,4 +1,14 @@
 {
+  "yaml.schemas": {
+    "./schemas/draft_2020-12/schema.json": ["schemas/*.yml", "schemas/*.yaml"],
+    "./schemas/book-schema.yaml": ["meta/book.yml"],
+    "./schemas/style-text-schema.yaml": ["style/text.yml", "style/text/*.yml"],
+    "./schemas/style-paragraph-schema.yaml": ["style/paragraph.yml", "style/paragraph/*.yml"],
+    "./schemas/settings-typography-rules.yaml": ["settings/typography-rules.yml"],
+    "./schemas/settings-hyphenation.yaml": ["settings/hyphenation.yml"],
+    "./schemas/settings-nobreak.yaml": ["settings/nobreak.yml"],
+    "./schemas/settings-layout.yaml": ["settings/layout.yml"]
+  },
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.expand": false,
   "explorer.fileNesting.patterns": {

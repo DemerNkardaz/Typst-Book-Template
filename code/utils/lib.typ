@@ -136,3 +136,11 @@
   }
   node
 }
+
+#let iso-parse(raw) = {
+  let parts = raw.split("-")
+  (
+    iso639: parts.at(0),
+    iso3166: parts.at(1),
+  )
+}

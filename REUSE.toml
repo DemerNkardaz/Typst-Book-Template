@@ -7,7 +7,7 @@ version = 1
 		"assets/logo-series.svg"
 	]
 	precedence = "override"
-	SPDX-FileCopyrightText = "2026 Ялла Нкардаз"
+	SPDX-FileCopyrightText = "Copyright (c) 2026 Ялла Нкардаз"
 	SPDX-License-Identifier = "CC-BY-NC-ND-4.0"
 
 [[annotations]]
@@ -16,10 +16,11 @@ version = 1
 		"code/utils/**",
 		"code/components/**",
 		"code/plugin/**",
+		"schemas/**",
 		"README.md"
 	]
 	precedence = "override"
-	SPDX-FileCopyrightText = "2026 Ялла Нкардаз"
+	SPDX-FileCopyrightText = "Copyright (c) 2026 Ялла Нкардаз"
 	SPDX-License-Identifier = "MIT"
 
 [[annotations]]
@@ -54,6 +55,14 @@ version = 1
 
 	SPDX-FileCopyrightText = "NONE"
 	SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+	path = [
+		"schemas/draft_2020-12/**"
+	]
+
+	SPDX-FileCopyrightText = "Copyright (c) 2020-2026, JSON Schema authors"
+	SPDX-License-Identifier = "AFL-3.0"
 
 
 [[annotations]]

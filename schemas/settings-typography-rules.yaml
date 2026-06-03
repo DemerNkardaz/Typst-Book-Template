@@ -1,0 +1,45 @@
+title: Text Processing Configuration
+type: object
+required: [storage, rules]
+additionalProperties: false
+
+properties:
+  storage:
+    type: object
+    required:
+      [
+        wallet,
+        temperature-scales,
+        left-sided-punctuation,
+        right-sided-punctuation,
+        spaces,
+      ]
+    additionalProperties:
+      type: array
+      description: Custom storage property
+      items: { type: string }
+    properties:
+      wallet: { type: array, items: { type: string } }
+      temperature-scales: { type: array, items: { type: string } }
+      left-sided-punctuation: { type: array, items: { type: string } }
+      right-sided-punctuation: { type: array, items: { type: string } }
+      spaces: { type: array, items: { type: string } }
+
+  rules:
+    type: array
+    description: List of text processing rules
+    items:
+      type: array
+      description: A text processing rule
+      items:
+        type: string
+        description: "Text processing rule: [regex, replacement, condition?]"
+      prefixItems:
+        - type: string
+          description: Regex pattern
+        - type: string
+          description: Replacement
+        - type: string
+          description: Optional condition
+      minItems: 2
+      maxItems: 3

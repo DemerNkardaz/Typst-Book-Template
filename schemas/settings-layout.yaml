@@ -1,0 +1,64 @@
+title: Page Configuration
+type: object
+required:
+  - mode
+  - default
+
+properties:
+  mode:
+    type: string
+    description: Active profile name.
+
+  default:
+    $ref: "#/$defs/profile"
+
+patternProperties:
+  "^(?!mode$|default$)[A-Za-z0-9_-]+$":
+    $ref: "#/$defs/profile"
+
+additionalProperties: false
+
+$defs:
+  profile:
+    type: object
+    properties:
+      page:
+        $ref: "#/$defs/page"
+    additionalProperties: false
+
+  page:
+    type: object
+    properties:
+      paper:
+        type: string
+        description: >
+          Paper format name or “custom”.
+          You can find all available paper formats here: https://typst.app/docs/reference/layout/page/#parameters-paper
+
+      size:
+        type: string
+        description: >
+          Custom page size, e.g. “170 × 260 mm” or (width: 170mm, height: 260mm).
+
+      margin:
+        oneOf:
+          - type: string
+            description: Uniform margin, e.g. “21mm”. Also you can use “top”, “bottom”, “inside” and “outside” keys inside the “margin”.
+
+          - type: object
+            properties:
+              top:
+                type: string
+              bottom:
+                type: string
+              inside:
+                type: string
+              outside:
+                type: string
+              left:
+                type: string
+              right:
+                type: string
+            additionalProperties: false
+
+    additionalProperties: false

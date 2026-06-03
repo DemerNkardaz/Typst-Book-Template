@@ -46,7 +46,7 @@ publisher:
   email: publish@example.com
   phone: +7 (495) 000-00-00
   url: ~
-  country: RU # ISO 3166-1
+  country: RU
   imprint: ~
 
 print:
@@ -97,9 +97,9 @@ translation:
 property:
   ISSN: 0000-0000
   ISBN: 978-5-0000-0000-0
-  DOI: ~ # 10.XXXXX/XXXXX
-  UPC: ~ # Barcode
-  LCCN: ~ # Library of Congress Control Number
+  DOI: ~
+  UPC: ~
+  LCCN: ~
   genre: ~
   keywords: []
   locale: ru-RU

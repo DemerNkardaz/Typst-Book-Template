@@ -1,0 +1,245 @@
+# prettier-ignore
+$schema: ./draft_2020f-12/schema.json
+title: Book Metadata
+type: object
+required: [book, audience, author, publisher, date, copyright, property, asset]
+additionalProperties: false
+
+properties:
+
+  book:
+    type: object
+    description: Book indentity
+    required: [title]
+    properties:
+      uuid:         { type: [string, "null"], pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }
+      id:           { type: [string, "null"] }
+      title:        { type: string }
+      title-short:  { type: [string, "null"] }
+      volume:       { type: [integer, "null"] }
+      volume-title: { type: [string, "null"] }
+      cycle:        { type: [string, "null"] }
+      series:       { type: [string, "null"] }
+      description:  { type: [string, "null"] }
+      description-author: { type: [string, "null"] }
+      archive:      { type: [string, "null"], format: uri }
+
+  dedication: { type: [string, "null"] }
+
+  epigraph:
+    type: [object, "null"]
+    required: [text]
+    properties:
+      text:   { type: string }
+      author: { type: [string, "null"] }
+
+  audience:
+    type: [object, "null"]
+    additionalProperties: false
+    properties:
+      age-rating:
+        type: [string, "null"]
+        enum: ["0+", "6+", "12+", "16+", "18+", null]
+      target:
+        type: [string, "null"]
+        enum: [children, teen, adult, academic, null]
+
+  author:
+    type: array
+    minItems: 1
+    description: Authors of the book
+    items:
+      type: object
+      required: [name]
+      properties:
+        name:     { type: string }
+        initials: { type: [string, "null"] }
+        position: { type: [string, "null"] }
+        url:      { type: [string, "null"], format: uri }
+        email:    { type: [string, "null"], format: email }
+        bio:      { type: [string, "null"] }
+        photo:    { type: [string, "null"] }
+        social:
+          type: [object, "null"]
+          properties:
+            telegram: { type: [string, "null"] }
+            vk:       { type: [string, "null"] }
+
+  publisher:
+    type: object
+    required: [name]
+    properties:
+      name:    { type: string }
+      origin:  { type: [string, "null"] }
+      address: { type: [string, "null"] }
+      email:   { type: [string, "null"], format: email }
+      phone:   { type: [string, "null"] }
+      url:     { type: [string, "null"], format: uri }
+      country:
+        type: [string, "null"]
+        description: "Country code in ISO 3166-1 alpha-2 format"
+        "enum": [
+          "AD", "AE", "AF", "AG", "AI", "AL", "AM", "AO", "AQ", "AR", "AS", "AT", "AU", "AW", "AX", "AZ",
+          "BA", "BB", "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BL", "BM", "BN", "BO", "BQ", "BR", "BS",
+          "BT", "BV", "BW", "BY", "BZ", "CA", "CC", "CD", "CF", "CG", "CH", "CI", "CK", "CL", "CM", "CN",
+          "CO", "CR", "CU", "CV", "CW", "CX", "CY", "CZ", "DE", "DJ", "DK", "DM", "DO", "DZ", "EC", "EE",
+          "EG", "EH", "ER", "ES", "ET", "FI", "FJ", "FK", "FM", "FO", "FR", "GA", "GB", "GD", "GE", "GF",
+          "GG", "GH", "GI", "GL", "GM", "GN", "GP", "GQ", "GR", "GS", "GT", "GU", "GW", "GY", "HK", "HM",
+          "HN", "HR", "HT", "HU", "ID", "IE", "IL", "IM", "IN", "IO", "IQ", "IR", "IS", "IT", "JE", "JM",
+          "JO", "JP", "KE", "KG", "KH", "KI", "KM", "KN", "KP", "KR", "KW", "KY", "KZ", "LA", "LB", "LC",
+          "LI", "LK", "LR", "LS", "LT", "LU", "LV", "LY", "MA", "MC", "MD", "ME", "MF", "MG", "MH", "MK",
+          "ML", "MM", "MN", "MO", "MP", "MQ", "MR", "MS", "MT", "MU", "MV", "MW", "MX", "MY", "MZ", "NA",
+          "NC", "NE", "NF", "NG", "NI", "NL", "NO", "NP", "NR", "NU", "NZ", "OM", "PA", "PE", "PF", "PG",
+          "PH", "PK", "PL", "PM", "PN", "PR", "PS", "PT", "PW", "PY", "QA", "RE", "RO", "RS", "RU", "RW",
+          "SA", "SB", "SC", "SD", "SE", "SG", "SH", "SI", "SJ", "SK", "SL", "SM", "SN", "SO", "SR", "SS",
+          "ST", "SV", "SX", "SY", "SZ", "TC", "TD", "TF", "TG", "TH", "TJ", "TK", "TL", "TM", "TN", "TO",
+          "TR", "TT", "TV", "TW", "TZ", "UA", "UG", "UM", "US", "UY", "UZ", "VA", "VC", "VE", "VG", "VI",
+          "VN", "VU", "WF", "WS", "YE", "YT", "ZA", "ZM", "ZW"
+        ]
+        minLength: 2
+        maxLength: 2
+      imprint: { type: [string, "null"] }
+
+  print:
+    type: [object, "null"]
+    properties:
+      pages:       { type: [integer, "null"] }
+      circulation: { type: [integer, "null"] }
+      paper:       { type: [string, "null"] }
+      binding:     { type: [string, "null"] }
+      format:      { type: [string, "null"] }
+
+  status:
+    type: [object, "null"]
+    properties:
+      stage:
+        type: string
+        default: draft
+        enum: [draft, review, final, published, archived]
+      confidential:
+        type: boolean
+        default: false
+
+  version:
+    type: [object, "null"]
+    properties:
+      edition:  { type: [integer, "null"] }
+      printing: { type: [integer, "null"] }
+      revision: { type: [integer, "null"] }
+
+  history:
+    type: [array, "null"]
+    items:
+      type: object
+      properties:
+        edition: { type: [integer, "null"] }
+        year:    { type: [integer, "null"] }
+        note:    { type: [string, "null"] }
+
+  contributor:
+    type: [array, "null"]
+    description: List of contributors
+    items:
+      type: object
+      properties:
+        role: { type: [string, "null"], description: "Editor, illustrator, etc." }
+        name: { type: [string, "null"] }
+        url:  { type: [string, "null"], format: uri }
+
+  date:
+    type: [object, "null"]
+    description: Date of project created, published, submitted and signed
+    properties:
+      year:      { type: [integer, "null"] }
+      month:     { type: [integer, "null"], minimum: 1, maximum: 12 }
+      day:       { type: [integer, "null"], minimum: 1, maximum: 31 }
+      published: { type: [string, "null"], format: date }
+      submitted: { type: [string, "null"], format: date }
+      signed:    { type: [string, "null"], format: date }
+
+  copyright:
+    type: [object, "null"]
+    description: Copyright notice
+    properties:
+      enabled:     { type: boolean, default: true }
+      notice:      { type: [string, "null"] }
+      license:     { type: [string, "null"], description: "ARR | CC-BY | CC-BY-NC etc." }
+      license-url: { type: [string, "null"], format: uri }
+
+  translation:
+    type: [object, "null"]
+    properties:
+      is-translation:  { type: boolean, default: false }
+      source-language: { type: [string, "null"] }
+      source-title:    { type: [string, "null"] }
+      source-author:   { type: [string, "null"] }
+
+  property:
+    type: [object, "null"]
+    description: Various book properties, e.g. ISBN. Custom properties are allowed
+    required:
+      - ISSN
+      - ISBN
+      - DOI
+      - UPC
+      - LCCN
+      - genre
+      - keywords
+      - locale
+    additionalProperties:
+      description: Custom property
+    properties:
+      ISSN:
+        type: [string, "null"]
+        description: International Standard Serial Number
+        example: "1234-5678"
+        pattern: "^[0-9]{4}-[0-9]{4}$"
+        minLength: 9
+      ISBN:
+        type: [string, "null"]
+        description: International Standard Book Number
+        example: "978-5-0000-0000-0"
+        pattern: "^((978|979)[- ]?[0-9][- ]?[0-9][- ]?[0-9][- ]?[0-9][- ]?[0-9][- ]?[0-9][- ]?[0-9][- ]?[0-9][- ]?[0-9][- ]?[0-9]|[0-9][- ]?[0-9][- ]?[0-9][- ]?[0-9][- ]?[0-9][- ]?[0-9][- ]?[0-9][- ]?[0-9][- ]?[0-9][- ]?[0-9Xx])$"
+        minLength: 17
+      DOI:
+        type: [string, "null"]
+        description: Digital Object Identifier
+        example: "10.1000/xyz123"
+        pattern: "^10\\.[0-9]{4,9}/[-._;()/:A-Z0-9]+$"
+      UPC:
+        type: [string, integer, "null"]
+        description: Universal Product Code
+        example: "012345678905"
+        pattern: "^[0-9]{1}([ ]?[0-9]{5}){2}[ ]?[0-9]{1}$"
+        minLength: 12
+        maxLength: 16
+      LCCN:
+        type: [string, integer, "null"]
+        description: Library of Congress Control Number
+        example: "2001012345"
+        pattern: "^[0-9]{2,4}-?[0-9]+$"
+        minLength: 5
+        maxLength: 15
+      genre:
+        type: [string, "null"]
+        description: Book genre
+      keywords:
+        type: array
+        description: Book keywords
+        items: { type: string }
+      locale:
+        type: [string, "null"]
+        description: Book locale in ISO 639-1/2/3 and ISO 3166-1 alpha-2 format
+        example: "ru-RU"
+        pattern: "^[a-z]{2,3}-[A-Z]{2}$"
+        minLength: 5
+
+  asset:
+    type: [array, "null"]
+    description: Resources (images, fonts, etc.)
+    items:
+      type: object
+      required: [name, path]
+      properties:
+        name: { type: string }
+        path: { type: string }

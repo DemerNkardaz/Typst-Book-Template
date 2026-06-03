@@ -1,0 +1,28 @@
+title: Hyphen Dictionary
+type: object
+required:
+  - options
+  - words
+additionalProperties: false
+
+properties:
+  options:
+    type: object
+    required:
+      - case-sensitive
+    additionalProperties: false
+    properties:
+      case-sensitive:
+        type: boolean
+        description: Match words with case sensitivity enabled.
+
+  words:
+    type: array
+    description: List of hyphenation patterns. List words with using of “-” as a marker for hyphenation.
+    items:
+      type: string
+      pattern: '^.+-.+\*?$'
+      description: >
+        Using of “-” is required for each word.
+        Hyphenation pattern. Use “*” as a wildcard suffix.
+        Example: Сёгу-нск* matches Сёгунский, Сёгунскому, Сёгунского.
