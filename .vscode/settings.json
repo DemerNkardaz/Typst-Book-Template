@@ -7,7 +7,8 @@
     "./schemas/settings-typography-rules.yaml": ["settings/typography-rules.yml"],
     "./schemas/settings-hyphenation.yaml": ["settings/hyphenation.yml"],
     "./schemas/settings-nobreak.yaml": ["settings/nobreak.yml"],
-    "./schemas/settings-layout.yaml": ["settings/layout.yml"]
+    "./schemas/settings-layout.yaml": ["settings/layout.yml"],
+    "./schemas/settings-build.yaml": ["settings/build.yml"]
   },
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.expand": false,

@@ -1,0 +1,99 @@
+title: Build settings
+type: object
+
+required:
+  - output-file-name
+  - export-dir
+  - color-conversion
+  - open-after-build
+  - png-ppi
+  - mode-default
+
+properties:
+  output-file-name:
+    type: [string, "null"]
+    default: null
+    description: "The name of the output file. If not provided, the title of the book is used."
+
+  export-dir:
+    type: string
+    default: export
+    description: "The directory to export the output file to. If not provided, the current directory is used."
+
+  color-conversion:
+    type: boolean
+    default: true
+    description: "Whether to convert the color profile of the images inside PDF file to selected ICC profile."
+
+  open-after-build:
+    type: boolean
+    default: false
+    description: "Whether to open the output file after build."
+
+  png-ppi:
+    type: integer
+    minimum: 1
+    default: 300
+    description: "The resolution of the PNG images."
+
+patternProperties:
+  "^mode-[A-Za-z0-9_-]+$":
+    $ref: "#/$defs/mode"
+
+unevaluatedProperties: false
+
+$defs:
+  mode:
+    type: object
+    description: "The settings for a specific mode."
+    additionalProperties: false
+
+    required:
+      - ICC
+      - pdf-version
+      - pdf-validator
+      - pages
+
+    properties:
+      ICC:
+        type: string
+        description: "The name of the ICC profile to use."
+
+      pdf-version:
+        type: string
+        description: "The PDF version to use."
+        enum:
+          - "PDF 1.4"
+          - "PDF 1.5"
+          - "PDF 1.6"
+          - "PDF 1.7"
+          - "PDF 2.0"
+
+      pdf-validator:
+        type: [string, "null"]
+        description: "The name of the PDF validator to use. If not provided, no validation is performed."
+        enum:
+          - "PDF/A-1b"
+          - "PDF/A-1a"
+          - "PDF/A-2b"
+          - "PDF/A-2u"
+          - "PDF/A-2a"
+          - "PDF/A-3b"
+          - "PDF/A-3u"
+          - "PDF/A-3a"
+          - "PDF/A-4"
+          - "PDF/A-4f"
+          - "PDF/A-4e"
+          - "PDF/UA-1"
+          - Null
+
+      pages:
+        description: 'The pages to use. If not provided, all pages are used. May be an integer, range of integers, or an array of integers. Example: “1,2-4,6-” or [1, "2-4", "6-"] means export pages 1, from page 2 to 4, and from page 6 to the end.'
+        oneOf:
+          - type: "null"
+          - type: string
+          - type: integer
+          - type: array
+            items:
+              type: [integer, string]
+              minimum: 1

@@ -67,7 +67,7 @@ mode_config = build[f"mode-{mode}"]
 
 output_name = (
     build["output-file-name"]
-    if build.get("output-file-name")
+    if build.get("output-file-name") and build["output-file-name"] is not None
     else book["title"]
 )
 
@@ -134,6 +134,8 @@ if pdf_standard is not None:
     typst_cmd += ["--pdf-standard", pdf_standard]
 
 pages = mode_config.get("pages")
+if isinstance(pages, list):
+    pages = ",".join(map(str, pages))
 if pages is not None:
     typst_cmd += ["--pages", str(pages)]
 if args.mode is not None:

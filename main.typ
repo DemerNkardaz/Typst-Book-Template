@@ -28,8 +28,6 @@
 
 Всего слов: #total-words
 
-#meta.author("naаme", fallback: locale.get("fallback.author"))
-
 #chapter.pre-title()
 #chapter.title()
 #chapter.frontmatter()
