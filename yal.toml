@@ -13,3 +13,7 @@ exec = "python3"
 [[command]]
 name = "make print"
 macros = "make --mode=print"
+
+[[command]]
+name = "chapter"
+script = "/code/.python/add-chapter.py"
