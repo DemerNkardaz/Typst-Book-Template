@@ -4,11 +4,21 @@ import urllib.request
 import zipfile
 import yaml
 
+import sys
+from pathlib import Path
+
+project_root = Path(__file__).resolve().parents[2]
+sys.path.append(str(project_root / "build"))
+
 from modules.i18n import info, succes
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 REGISTRY_YML = BASE_DIR / "assets" / "registry.yml"
 ASSET_EXTENSIONS = {".icc", ".icm"}
+
+
+def main() -> None:
+    fetch_assets()
 
 
 def download_file(url: str, target: Path) -> None:
@@ -58,3 +68,6 @@ def fetch_assets() -> None:
                 target = folder_path / f"{asset_name}{suffix}"
                 download_file(url, target)
                 info("info.assets-saved", name=target.name)
+
+if __name__ == "__main__":
+    main()

@@ -1,7 +1,7 @@
 output-file-name: ~
 export-dir: export
 color-conversion: true
-open-after-build: true
+open-after-build: false
 png-ppi: 300
 mode-default:
   ICC: sRGB_v4_ICC_preference_displayclass

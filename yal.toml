@@ -15,5 +15,11 @@ name = "make print"
 macros = "make --mode=print"
 
 [[command]]
+name = "assets"
+script = "/build/modules/assets.py"
+exec = "python3"
+
+[[command]]
 name = "chapter"
 script = "/code/.python/add-chapter.py"
+exec = "python3"
