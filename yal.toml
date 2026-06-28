@@ -23,3 +23,14 @@ exec = "python3"
 name = "chapter"
 script = "/code/.python/add-chapter.py"
 exec = "python3"
+
+[[command]]
+name = "hello"
+script = """
+def greet():
+    print("Привет из инлайн-скрипта!")
+    print("Вторая строка вывода — для проверки многострочности.")
+
+greet()
+"""
+exec = "python3"

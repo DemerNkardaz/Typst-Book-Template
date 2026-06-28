@@ -59,6 +59,9 @@ properties:
         email:    { type: [string, "null"], format: email }
         bio:      { type: [string, "null"] }
         photo:    { type: [string, "null"] }
+        orcid:
+          type: [string, "null"]
+          pattern: "^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]$"
         social:
           type: [object, "null"]
           properties:
@@ -184,6 +187,7 @@ properties:
       - UPC
       - LCCN
       - genre
+      - genres
       - keywords
       - locale
     additionalProperties:
@@ -222,7 +226,11 @@ properties:
         maxLength: 15
       genre:
         type: [string, "null"]
-        description: Book genre
+        description: Book primary genre, e.g. science fiction, fantasy, non-fiction, horror, mystery, drama
+      genres:
+        type: [array, "null"]
+        description: Book clarifying genres, e.g. action, adventure, epic, high fantasy, gothic, drama
+        items: { type: string }
       keywords:
         type: array
         description: Book keywords

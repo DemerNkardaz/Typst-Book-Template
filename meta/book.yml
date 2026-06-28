@@ -28,6 +28,7 @@ author:
     email: ~
     bio: ~
     photo: ~
+    orcid: ~
     social:
       telegram: ~
       vk: ~
@@ -101,6 +102,7 @@ property:
   UPC: ~
   LCCN: ~
   genre: ~
+  genres: ~
   keywords: []
   locale: ru-RU
   # Custom properties

@@ -1,8 +1,7 @@
 [meta]
-yal-min-version = "0.1.2"
+yal-min-version = "0.1.3"
 post-commands = [
 	"git init --initial-branch=main",
-	"pip install pyyaml pikepdf pillow"
 ]
 exclude = [
 	".flake8",
@@ -27,23 +26,123 @@ default  = ""
 
 [[fields]]
 id       = "book-genre"
-type     = "text"
+type     = "select"
 required = false
+options  = [
+    "Fantasy",
+		"Fiction",
+    "Science Fiction",
+    "Horror",
+    "Mystery",
+    "Thriller",
+    "Romance",
+    "Historical",
+    "Adventure",
+    "Western",
+    "Crime",
+    "Drama",
+    "Comedy",
+    "Satire",
+    "Dystopian",
+    "Utopian",
+    "Young Adult",
+    "Children’s",
+		"Autobiography",
+]
 default  = ""
+allow-custom = true
 
 [[fields]]
-id       = "book-lang"
-type     = "select"
-required = true
-default  = "en-US"
+id       = "book-genres"
+type     = "multi-select"
+required = false
+options  = [
+    "Action",
+    "Adventure",
+    "Comedy",
+    "Drama",
+    "Romance",
+    "Mystery",
+    "Psychological",
+    "Political",
+    "Military",
+    "Epic",
+    "Dark",
+    "Urban",
+    "High Fantasy",
+    "Low Fantasy",
+    "Sword and Sorcery",
+    "Space Opera",
+    "Hard Science Fiction",
+    "Cyberpunk",
+    "Steampunk",
+    "Biopunk",
+    "Post-Apocalyptic",
+    "Supernatural",
+    "Paranormal",
+    "Gothic",
+    "Survival",
+    "Coming-of-Age",
+    "Slice of Life",
+    "Family",
+    "Historical Fiction",
+    "Philosophical",
+    "Religious",
+    "Mythological",
+    "Noir",
+    "Cozy",
+    "Suspense",
+    "Detective",
+		"Novel",
+		"Journal",
+		"Diary",
+		# Chinese
+		"Wǔxiá",
+		"Xiānxiá"
+]
+default  = []
+allow-custom = true
+
+[[fields]]
+id						= "book-lang"
+type					= "select"
+required			= true
+options				= [
+	"en-US", "en-GB", "ru-RU", "uk-UA", "be-BY", "bg-BG", "kk-KZ",
+	"de-DE", "de-CH", "fr-FR", "es-ES", "is-IS", "it-IT", "pt-BR",
+	"el-GR", "zh-CN", "ja-JP", "ko-KR"
+]
+default				= "en-US"
+allow-custom	= true
 
 [messages]
 book-name.prompt      = "Enter book title"
 book-name.placeholder = "Untitled book"
 book-author.prompt    = "Enter author name"
 book-author.placeholder = "Anonymous"
+
 book-lang.prompt      = "Select book locale  in ISO-639, ISO-3166 format"
+book-lang.option.en-US = "English (United States)"
+book-lang.option.en-GB = "English (United Kingdom)"
+book-lang.option.ru-RU = "Русский (Россия)"
+book-lang.option.uk-UA = "Українська (Україна)"
+book-lang.option.be-BY = "Беларуская (Беларусь)"
+book-lang.option.bg-BG = "Български (България)"
+book-lang.option.kk-KZ = "Қазақша (Қазақстан)"
+book-lang.option.de-DE = "Deutsch (Deutschland)"
+book-lang.option.de-CH = "Deutsch (Schweiz)"
+book-lang.option.fr-FR = "Français (France)"
+book-lang.option.es-ES = "Español (España)"
+book-lang.option.is-IS = "Icelandic (Iceland)"
+book-lang.option.it-IT = "Italiano (Italia)"
+book-lang.option.pt-BR = "Português (Brasil)"
+book-lang.option.el-GR = "Ελληνικά (Ελλαδα)"
+book-lang.option.zh-CN = "中文 (中国大陆)"
+book-lang.option.ja-JP = "日本語 (日本)"
+book-lang.option.ko-KR = "한국어 (대한 고국)"
+
 book-genre.prompt     = "Enter book genre"
+book-genres.prompt     = "Select clarifying book genres"
 
 [messages.ru]
 book-name.prompt      = "Введите название книги"
@@ -51,7 +150,70 @@ book-name.placeholder = "Книга без названия"
 book-author.prompt    = "Введите имя автора"
 book-author.placeholder = "Аноним"
 book-lang.prompt      = "Выберите локализацию книги в формате ISO-639, ISO-3166"
+
 book-genre.prompt     = "Введите жанр книги"
+book-genre.option-value."Fantasy" = "Фэнтези"
+book-genre.option-value."Fiction" = "Фантастика"
+book-genre.option-value."Science Fiction" = "Научная фантастика"
+book-genre.option-value."Horror" = "Ужасы"
+book-genre.option-value."Mystery" = "Мистика"
+book-genre.option-value."Thriller" = "Триллер"
+book-genre.option-value."Romance" = "Роман"
+book-genre.option-value."Historical" = "Историческая проза"
+book-genre.option-value."Adventure" = "Приключенческая проза"
+book-genre.option-value."Western" = "Вестерн"
+book-genre.option-value."Crime" = "Криминал"
+book-genre.option-value."Drama" = "Драма"
+book-genre.option-value."Comedy" = "Комедия"
+book-genre.option-value."Satire" = "Сатира"
+book-genre.option-value."Dystopia" = "Дистопия"
+book-genre.option-value."Utopian" = "Утопия"
+book-genre.option-value."Young Adult" = "Подростковая литература"
+book-genre.option-value."Children’s" = "Детская литература"
+book-genre.option-value."Autobiography" = "Автобиография"
+
+book-genres.prompt     = "Выберите дополнительные жанры книги"
+book-genres.option-value."Action" = "Действие"
+book-genres.option-value."Adventure" = "Приключение"
+book-genres.option-value."Comedy" = "Комедия"
+book-genres.option-value."Drama" = "Драма"
+book-genres.option-value."Romance" = "Романтика"
+book-genres.option-value."Mystery" = "Мистика"
+book-genres.option-value."Psychological" = "Психология"
+book-genres.option-value."Political" = "Политика"
+book-genres.option-value."Military" = "Военная литература"
+book-genres.option-value."Epic" = "Эпическая литература"
+book-genres.option-value."Dark" = "Тёмная литература"
+book-genres.option-value."Urban" = "Городская литература"
+book-genres.option-value."High Fantasy" = "Высокое фэнтези"
+book-genres.option-value."Low Fantasy" = "Низкое фэнтези"
+book-genres.option-value."Sword and Sorcery" = "Меч и колдовство"
+book-genres.option-value."Space Opera" = "Космическая опера"
+book-genres.option-value."Hard Science Fiction" = "Твёрдая научная фантастика"
+book-genres.option-value."Cyberpunk" = "Киберпанк"
+book-genres.option-value."Steampunk" = "Стимпанк"
+book-genres.option-value."Biopunk" = "Биопанк"
+book-genres.option-value."Post-Apocalyptic" = "Постапокалипсис"
+book-genres.option-value."Supernatural" = "Сверхъестественное"
+book-genres.option-value."Paranormal" = "Парадоксальное"
+book-genres.option-value."Gothic" = "Готическая литература"
+book-genres.option-value."Survival" = "Выживание"
+book-genres.option-value."Coming-of-Age" = "История взросления"
+book-genres.option-value."Slice of Life" = "Ломтик жизни"
+book-genres.option-value."Family" = "Семейная литература"
+book-genres.option-value."Historical Fiction" = "Историческая фантастика"
+book-genres.option-value."Philosophical" = "Философская литература"
+book-genres.option-value."Religious" = "Религиозная литература"
+book-genres.option-value."Mythological" = "Мифологическая литература"
+book-genres.option-value."Noir" = "Нуар"
+book-genres.option-value."Cozy" = "Кози"
+book-genres.option-value."Suspense" = "Саспенс"
+book-genres.option-value."Detective" = "Детектив"
+book-genres.option-value."Novel" = "Роман"
+book-genres.option-value."Journal" = "Журнал"
+book-genres.option-value."Diary" = "Дневник"
+book-genres.option-value."Wǔxiá" = "Уся"
+book-genres.option-value."Xiānxiá" = "Сянься"
 
 [[targets]]
 file   = "/meta/book.yml"
@@ -81,6 +243,11 @@ key   = "copyright.notice"
 field = "book-genre"
 fallback = "${NULL}"
 key   = "property.genre"
+
+[[targets.fields]]
+field = "book-genres"
+fallback = "${NULL}"
+key   = "property.genres"
 
 # [[targets.fields]]
 # value = "${NULL}"
