@@ -4,6 +4,10 @@ template-version = ""
 created-at = ""
 yal-version = ""
 
+[header]
+name = "Typst Book Template"
+version = "0.0.0"
+
 [[command]]
 name = "make"
 arguments = {--mode = []}
