@@ -1,0 +1,33 @@
+origin:
+  header: Typst Book Template
+  template: ""
+  template-version: ""
+  created-at: ""
+  yal-version: ""
+
+command:
+  - name: make
+    arguments:
+      --mode: []
+    script: /build/build.py
+    exec: python3
+
+  - name: make print
+    macros: make --mode=print
+
+  - name: assets
+    script: /build/modules/assets.py
+    exec: python3
+
+  - name: chapter
+    script: /code/.python/add-chapter.py
+    exec: python3
+
+  - name: hello
+    script: |
+      def greet():
+          print("Привет из инлайн-скрипта!")
+          print("Вторая строка вывода — для проверки многострочности.")
+
+      greet()
+    exec: python3
