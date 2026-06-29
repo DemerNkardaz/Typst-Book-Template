@@ -32,6 +32,7 @@ options  = [
     "Fantasy",
 		"Fiction",
     "Science Fiction",
+		"Science Fantasy",
     "Horror",
     "Mystery",
     "Thriller",
@@ -51,6 +52,7 @@ options  = [
 ]
 default  = ""
 allow-custom = true
+min-cols = 2
 
 [[fields]]
 id       = "book-genres"
@@ -71,9 +73,11 @@ options  = [
     "Urban",
     "High Fantasy",
     "Low Fantasy",
+		"Technofantasy",
     "Sword and Sorcery",
     "Space Opera",
     "Hard Science Fiction",
+		"Science Fantasy",
     "Cyberpunk",
     "Steampunk",
     "Biopunk",
@@ -86,6 +90,7 @@ options  = [
     "Slice of Life",
     "Family",
     "Historical Fiction",
+		"Historical Fantasy",
     "Philosophical",
     "Religious",
     "Mythological",
@@ -102,6 +107,7 @@ options  = [
 ]
 default  = []
 allow-custom = true
+min-cols = 2
 
 [[fields]]
 id						= "book-lang"
@@ -114,6 +120,7 @@ options				= [
 ]
 default				= "en-US"
 allow-custom	= true
+min-cols = 2
 
 [[fields]]
 id				= "book-add-params"
@@ -180,6 +187,7 @@ book-genre.prompt     = "Введите жанр книги"
 book-genre.option."Fantasy" = "Фэнтези"
 book-genre.option."Fiction" = "Фантастика"
 book-genre.option."Science Fiction" = "Научная фантастика"
+book-genre.option."Science Fantasy" = "Научное фэнтези"
 book-genre.option."Horror" = "Ужасы"
 book-genre.option."Mystery" = "Мистика"
 book-genre.option."Thriller" = "Триллер"
@@ -212,9 +220,11 @@ book-genres.option."Dark" = "Тёмная литература"
 book-genres.option."Urban" = "Городская литература"
 book-genres.option."High Fantasy" = "Высокое фэнтези"
 book-genres.option."Low Fantasy" = "Низкое фэнтези"
+book-genres.option."Technofantasy" = "Технофэнтези"
 book-genres.option."Sword and Sorcery" = "Меч и колдовство"
 book-genres.option."Space Opera" = "Космическая опера"
 book-genres.option."Hard Science Fiction" = "Твёрдая научная фантастика"
+book-genres.option."Science Fantasy" = "Научное фэнтези"
 book-genres.option."Cyberpunk" = "Киберпанк"
 book-genres.option."Steampunk" = "Стимпанк"
 book-genres.option."Biopunk" = "Биопанк"
@@ -227,6 +237,7 @@ book-genres.option."Coming-of-Age" = "История взросления"
 book-genres.option."Slice of Life" = "Ломтик жизни"
 book-genres.option."Family" = "Семейная литература"
 book-genres.option."Historical Fiction" = "Историческая фантастика"
+book-genres.option."Historical Fantasy" = "Историческое фэнтези"
 book-genres.option."Philosophical" = "Философская литература"
 book-genres.option."Religious" = "Религиозная литература"
 book-genres.option."Mythological" = "Мифологическая литература"

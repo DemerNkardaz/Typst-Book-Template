@@ -1,12 +1,9 @@
 [origin]
+header = "Typst Book Template"
 template = ""
 template-version = ""
 created-at = ""
 yal-version = ""
-
-[header]
-name = "Typst Book Template"
-version = "0.0.0"
 
 [[command]]
 name = "make"
