@@ -1,3 +1,4 @@
+$schema: ./draft_2020-12/schema.json
 title: Build settings
 type: object
 

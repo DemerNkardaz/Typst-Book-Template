@@ -1,4 +1,5 @@
 # prettier-ignore
+$schema: ./draft_2020-12/schema.json
 title: Typst Paragraph Configuration
 type: object
 additionalProperties: false

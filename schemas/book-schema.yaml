@@ -1,5 +1,5 @@
 # prettier-ignore
-$schema: ./draft_2020f-12/schema.json
+$schema: ./draft_2020-12/schema.json
 title: Book Metadata
 type: object
 required: [book, audience, author, publisher, date, copyright, property, asset]

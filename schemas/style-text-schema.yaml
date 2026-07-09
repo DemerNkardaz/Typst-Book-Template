@@ -1,4 +1,5 @@
 # prettier-ignore
+$schema: ./draft_2020-12/schema.json
 title: Typst Text Configuration
 type: object
 additionalProperties: false
