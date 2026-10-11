@@ -14,5 +14,11 @@ number-type: lining
 number-width: tabular
 top-edge: x-height
 bottom-edge: baseline
+variations:
+  opsz: 10
+  wght: 400
+  wdth: 100
+  slnt: 0
+  ital: 0
 
 fill: cmyk(0%, 0%, 0%, 95%)
