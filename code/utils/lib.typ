@@ -89,6 +89,11 @@
     return eval(value)
   }
 
+	let align-word = "(start|end|left|center|right|top|horizon|bottom)"
+	if value.match(regex("^" + align-word + "(\\s*\\+\\s*" + align-word + ")?$")) != none {
+		return eval(value)
+	}
+
   let starts-with-number = value.match(regex("^-?\\d")) != none
   let has-units = value.match(regex("\\d+(pt|mm|cm|in|em|%|deg|rad|fr)")) != none
   let has-operators = value.match(regex("\\s[+\\-*/]\\s")) != none

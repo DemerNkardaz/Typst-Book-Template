@@ -1,0 +1,2 @@
+# yaml-language-server: $schema=../schemas/style-page-schema.yaml
+fill: cmyk(0%, 0%, 0%, 0%)

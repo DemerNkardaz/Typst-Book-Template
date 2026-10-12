@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=draft_2020-12/schema.json
 $schema: ./draft_2020-12/schema.json
 title: Page Configuration
 type: object
@@ -27,6 +28,38 @@ $defs:
         $ref: "#/$defs/page"
     additionalProperties: false
 
+  length:
+    type: string
+    description: >
+      Relative length, e.g. “3mm”, “5%”, “21mm + 2pt”.
+
+  sides:
+    type: object
+    description: >
+      Individual sides. Keys in order of precedence: top, right, bottom,
+      left, inside, outside, x, y, rest. “left”/“right” cannot be combined
+      with “inside”/“outside”. “rest” applies to all sides not set explicitly.
+    properties:
+      top: { $ref: "#/$defs/length" }
+      right: { $ref: "#/$defs/length" }
+      bottom: { $ref: "#/$defs/length" }
+      left: { $ref: "#/$defs/length" }
+      inside: { $ref: "#/$defs/length" }
+      outside: { $ref: "#/$defs/length" }
+      x: { $ref: "#/$defs/length" }
+      y: { $ref: "#/$defs/length" }
+      rest: { $ref: "#/$defs/length" }
+    additionalProperties: false
+    dependentSchemas:
+      left:
+        properties:
+          inside: false
+          outside: false
+      right:
+        properties:
+          inside: false
+          outside: false
+
   page:
     type: object
     properties:
@@ -38,28 +71,40 @@ $defs:
 
       size:
         type: string
+        pattern: '^\d+\s*[×*]\s*\d+\s*in\s*.+$'
         description: >
-          Custom page size, e.g. “170 × 260 mm” or (width: 170mm, height: 260mm).
+          Custom page size in the form “WIDTH × HEIGHT in UNIT”,
+          e.g. “170 × 260 in mm”. Used when paper is “custom”.
+          Can be replaced by “width” and “height”.
+
+      width:
+        $ref: "#/$defs/length"
+        description: Custom page width. Overrides the first value of “size”.
+
+      height:
+        $ref: "#/$defs/length"
+        description: Custom page height. Overrides the second value of “size”.
 
       margin:
+        description: >
+          Page margins. “auto” (2.5/21 of the smaller page dimension),
+          a single length for all sides, or an object with individual sides.
+          Omitted keys fall back to the previously set value (or auto).
+          A margin object in a profile replaces the one from “default”
+          entirely, it is not merged with it.
         oneOf:
           - type: string
-            description: Uniform margin, e.g. “21mm”. Also you can use “top”, “bottom”, “inside” and “outside” keys inside the “margin”.
+            description: “auto” or a single length, e.g. “21mm”.
+          - $ref: "#/$defs/sides"
 
-          - type: object
-            properties:
-              top:
-                type: string
-              bottom:
-                type: string
-              inside:
-                type: string
-              outside:
-                type: string
-              left:
-                type: string
-              right:
-                type: string
-            additionalProperties: false
+      bleed:
+        description: >
+          Bleed area beyond the trim size. Visible only in PDF: it enlarges
+          the MediaBox and defines the TrimBox. A single length for all sides
+          or an object with individual sides (same keys as in “margin”).
+          Omitted keys are 0pt. Does not accept “auto”.
+        oneOf:
+          - $ref: "#/$defs/length"
+          - $ref: "#/$defs/sides"
 
     additionalProperties: false

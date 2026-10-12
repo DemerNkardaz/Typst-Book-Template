@@ -2,6 +2,11 @@
 
 #let _parse-dict(dict) = {
   let result = (:)
+
+	if dict == none {
+		return result
+	}
+
   for (k, v) in dict {
     result.insert(k, if type(v) == dictionary {
       _parse-dict(v)
@@ -17,6 +22,17 @@
     .split(" ")
     .map(t => t.trim())
     .filter(t => t.len() > 0)
+
+	let apply-page(body) = {
+		let path = if name == "" {
+			"../../../style/page.yml"
+		} else {
+			"../../../style/page/" + name + ".yml"
+		}
+		let data = _parse-dict(yaml(path))
+		set page(..data)
+		body
+	}
 
   let apply-par(body) = {
     let path = if name == "" {
@@ -49,6 +65,20 @@
   }
 
   body
+}
+
+#let use-page(name: "", body) = {
+	let path = if name == "" {
+		"../../../style/page.yml"
+	} else {
+		"../../../style/page/" + name + ".yml"
+	}
+
+	let data = _parse-dict(yaml(path))
+
+	set page(..data)
+
+	body
 }
 
 #let use-par(name: "", body) = {

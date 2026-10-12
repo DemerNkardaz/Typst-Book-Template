@@ -10,6 +10,7 @@
 )
 
 #show: layout.init
+#show: style.use-page
 #show: style.use-par
 #show: style.use-text
 #show: nobreak.apply

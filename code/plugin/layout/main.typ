@@ -3,6 +3,19 @@
 #let _data = yaml("../../../settings/layout.yml")
 #let _mode = sys.inputs.at("layout-mode", default: _data.at("mode"))
 
+#let _parse-deep(value) = {
+  if type(value) == str {
+    parse-value(value)
+  } else if type(value) == dictionary {
+    value
+      .pairs()
+      .map(((k, v)) => (k, _parse-deep(v)))
+      .to-dict()
+  } else {
+    value
+  }
+}
+
 #let get(key, section: _mode) = {
   let keys = key.split(".")
 
@@ -39,7 +52,7 @@
     return parse-value(value)
   }
 
-  return value
+  return _parse-deep(value)
 }
 
 #let init(body) = {
@@ -47,6 +60,7 @@
   let page-size = get("page.size")
   let page-width = get("page.width")
   let page-height = get("page.height")
+	let page-bleed = get("page.bleed")
 
   if page-width == none {
     page-width = page-size.at(0)
@@ -63,6 +77,10 @@
       height: page-height,
     )
   }
+
+	if page-bleed != none {
+		page-params.insert("bleed", page-bleed)
+	}
 
   set page(
     ..page-params,

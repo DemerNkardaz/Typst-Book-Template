@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=../schemas/settings-layout.yaml
 mode: default
 
 default:
@@ -5,6 +6,7 @@ default:
     paper: custom
     size: 170 × 260 in mm
     margin: 21mm
+    bleed: 5mm
 
 print:
   page:

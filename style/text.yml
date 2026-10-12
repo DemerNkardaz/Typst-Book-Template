@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=../schemas/style-text-schema.yaml
 font: Playfair Display
 size: 10pt
 hyphenate: auto

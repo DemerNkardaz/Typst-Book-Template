@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=draft_2020-12/schema.json
 # prettier-ignore
 $schema: ./draft_2020-12/schema.json
 title: Typst Text Configuration
@@ -97,6 +98,12 @@ properties:
         enum: [descender, baseline, bounds]
       - type: string
         pattern: ^[0-9]+(\.[0-9]+)?(pt|em|cm|mm|in)$
+
+  variations:
+    description: OpenType variable font axes to apply.
+    type: object
+    additionalProperties:
+      type: number
 
   lang:
     description: An ISO 639-1/2/3 language code.
