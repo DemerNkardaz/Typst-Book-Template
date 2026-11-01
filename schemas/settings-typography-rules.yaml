@@ -6,26 +6,19 @@ required: [storage, rules]
 additionalProperties: false
 
 properties:
+  locales:
+    type: array
+    description: Available locale profile names, corresponding to <locale>.yml files.
+    items:
+      type: string
+      pattern: '^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'
+
   storage:
     type: object
-    required:
-      [
-        wallet,
-        temperature-scales,
-        left-sided-punctuation,
-        right-sided-punctuation,
-        spaces,
-      ]
+    description: Named lists of strings (any set of keys)
     additionalProperties:
       type: array
-      description: Custom storage property
       items: { type: string }
-    properties:
-      wallet: { type: array, items: { type: string } }
-      temperature-scales: { type: array, items: { type: string } }
-      left-sided-punctuation: { type: array, items: { type: string } }
-      right-sided-punctuation: { type: array, items: { type: string } }
-      spaces: { type: array, items: { type: string } }
 
   rules:
     type: array

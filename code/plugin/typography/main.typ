@@ -1,7 +1,38 @@
-#let _data = yaml("../../../settings/typography-rules.yml")
+#import "../meta/main.typ" as meta
+#import "../../utils/lib.typ" as utils
 
-#let _storage = if "storage" in _data { _data.storage } else { (:) }
-#let _rules   = if "rules"   in _data { _data.rules   } else { _data }
+#let _base = yaml("../../../settings/typography/.yml")
+#let _raw-locale = str(meta.property("locale", fallback: "en-US"))
+#let _locale-parts = utils.iso-parse(_raw-locale)
+#let _locale-language = lower(_locale-parts.at("iso639"))
+#let _locale-tag = _locale-language + "-" + upper(_locale-parts.at("iso3166"))
+#let _locale-candidates = (_locale-tag, _locale-language)
+#let _available-locales = _base.at("locales", default: ())
+#let _selected-locale = _locale-candidates.find(candidate => {
+  _available-locales.contains(candidate)
+})
+#let _locale-data = if _selected-locale == none {
+  (storage: (:), rules: ())
+} else {
+  yaml("../../../settings/typography/" + _selected-locale + ".yml")
+}
+
+#let _merge-dictionaries(base, overrides) = {
+  let merged = (:)
+  for (key, value) in base.pairs() {
+    merged.insert(key, value)
+  }
+  for (key, value) in overrides.pairs() {
+    merged.insert(key, value)
+  }
+  merged
+}
+
+#let _storage = _merge-dictionaries(
+  _base.at("storage", default: (:)),
+  _locale-data.at("storage", default: (:)),
+)
+#let _rules = _base.at("rules", default: ()) + _locale-data.at("rules", default: ())
 
 #let _resolve-storage(s) = {
   let rest = s
