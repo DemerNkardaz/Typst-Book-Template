@@ -6,16 +6,25 @@ open-after-build: false
 png-ppi: 300
 mode-default:
   ICC: sRGB_v4_ICC_preference_displayclass
+  output-condition-identifier: sRGB
+  output-condition: sRGB
+  output-registry: http://www.color.org
   pdf-version: PDF 2.0
   pdf-validator: ~
   pages: ~
 mode-print:
   ICC: PSOcoated_v3
+  output-condition-identifier: FOGRA51
+  output-condition: PSO Coated v3
+  output-registry: http://www.color.org
   pdf-version: PDF 2.0
   pdf-validator: ~
   pages: ~
 mode-accessible:
   ICC: sRGB_v4_ICC_preference_displayclass
+  output-condition-identifier: sRGB
+  output-condition: sRGB
+  output-registry: http://www.color.org
   pdf-version: PDF 1.7
   pdf-validator: PDF/UA-1
   pages: ~

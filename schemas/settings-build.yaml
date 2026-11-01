@@ -61,6 +61,19 @@ $defs:
         type: string
         description: "The name of the ICC profile to use."
 
+      output-condition-identifier:
+        type: string
+        description: "Output condition identifier recorded in the PDF OutputIntent (for example FOGRA51)."
+
+      output-condition:
+        type: string
+        description: "Human-readable description of the output condition."
+
+      output-registry:
+        type: string
+        format: uri
+        description: "Registry for the output condition identifier, commonly http://www.color.org."
+
       pdf-version:
         type: string
         description: "The PDF version to use."
@@ -72,22 +85,42 @@ $defs:
           - "PDF 2.0"
 
       pdf-validator:
-        type: [string, "null"]
-        description: "Additional PDF standard to validate during compilation. PDF/UA-1 also triggers veraPDF validation after post-processing."
-        enum:
-          - "PDF/A-1b"
-          - "PDF/A-1a"
-          - "PDF/A-2b"
-          - "PDF/A-2u"
-          - "PDF/A-2a"
-          - "PDF/A-3b"
-          - "PDF/A-3u"
-          - "PDF/A-3a"
-          - "PDF/A-4"
-          - "PDF/A-4f"
-          - "PDF/A-4e"
-          - "PDF/UA-1"
-          - Null
+        description: >
+          Additional PDF standard(s) enforced by Typst at compile time. PDF/A
+          and PDF/UA standards are also checked by veraPDF after post-processing.
+        oneOf:
+          - type: string
+            enum:
+              - "PDF/A-1b"
+              - "PDF/A-1a"
+              - "PDF/A-2b"
+              - "PDF/A-2u"
+              - "PDF/A-2a"
+              - "PDF/A-3b"
+              - "PDF/A-3u"
+              - "PDF/A-3a"
+              - "PDF/A-4"
+              - "PDF/A-4f"
+              - "PDF/A-4e"
+              - "PDF/UA-1"
+          - type: array
+            uniqueItems: true
+            items:
+              type: string
+              enum:
+                - "PDF/A-1b"
+                - "PDF/A-1a"
+                - "PDF/A-2b"
+                - "PDF/A-2u"
+                - "PDF/A-2a"
+                - "PDF/A-3b"
+                - "PDF/A-3u"
+                - "PDF/A-3a"
+                - "PDF/A-4"
+                - "PDF/A-4f"
+                - "PDF/A-4e"
+                - "PDF/UA-1"
+          - type: "null"
 
       pages:
         description: 'The pages to use. If not provided, all pages are used. May be an integer, range of integers, or an array of integers. Example: “1,2-4,6-” or [1, "2-4", "6-"] means export pages 1, from page 2 to 4, and from page 6 to the end.'

@@ -12,7 +12,7 @@ from modules.icc import apply_output_intent, get_color_channels, pdf_info
 from modules.image_process import convert_images
 from modules.log import write_log
 from modules.meta import write_pdf_metadata
-from modules.pdf_validation import VeraPdfError, VeraPdfUnavailable, validate_pdf_ua
+from modules.pdf_validation import VeraPdfError, VeraPdfUnavailable, validate_pdf
 from modules.i18n import error, info, succes, warn
 
 parser = argparse.ArgumentParser()
@@ -65,6 +65,9 @@ if status.get("stage") == "draft":
 
 mode = args.mode or layout["mode"]
 mode_config = build[f"mode-{mode}"]
+output_format = args.format or "pdf"
+if output_format not in {"pdf", "png"}:
+    parser.error("--as must be either pdf or png")
 
 output_name = (
     build["output-file-name"]
@@ -73,13 +76,25 @@ output_name = (
 )
 
 icc_name = mode_config["ICC"]
+output_condition_identifier = mode_config.get("output-condition-identifier", icc_name)
+output_condition = mode_config.get("output-condition")
+output_registry = mode_config.get("output-registry")
 pdf_version_raw = mode_config.get("pdf-version")
 pdf_validator_raw = mode_config.get("pdf-validator")
 color_conversion = bool(build.get("color-conversion", False))
 pdf_validator_values = (
     pdf_validator_raw if isinstance(pdf_validator_raw, list) else [pdf_validator_raw]
 )
-verify_pdf_ua = "PDF/UA-1" in pdf_validator_values
+post_validation_standards = [
+    standard
+    for standard in pdf_validator_values
+    if isinstance(standard, str) and standard.startswith(("PDF/A-", "PDF/UA-"))
+]
+is_pdfa = pdf_version_raw is not None and pdf_version_raw.startswith("PDF/A-")
+is_pdfa = is_pdfa or any(
+    isinstance(standard, str) and standard.startswith("PDF/A-")
+    for standard in pdf_validator_values
+)
 
 pdf_version_to_standard = {
     "PDF 1.4": "1.4",
@@ -101,7 +116,11 @@ pdf_version_to_standard = {
     "PDF/UA-1": "ua-1",
 }
 
-pdf_standard = pdf_version_to_standard.get(pdf_version_raw)
+pdf_standard = (
+    pdf_version_to_standard.get(pdf_version_raw)
+    if isinstance(pdf_version_raw, str)
+    else None
+)
 standards_list = [pdf_standard] if pdf_standard else []
 
 if isinstance(pdf_validator_raw, list):
@@ -127,15 +146,16 @@ if export_dir != BASE_DIR:
 
 raw_pdf_path = BASE_DIR / "main.pdf"
 pdf_path = export_dir / f"{output_name} [{mode}].pdf"
+png_path = export_dir / f"{output_name} [{mode}]{{p}}.png"
 icc_path = ICC_DIR / f"{icc_name}.icc"
 
-if args.format == "png":
-    print("warning: --as png is currently ignored; PDF output will still be produced.")
+compile_output = png_path if output_format == "png" else raw_pdf_path
+info("info.typst-compiling", src=MAIN_TYP, dst=compile_output)
+typst_cmd = ["typst", "compile", str(MAIN_TYP), str(compile_output)]
 
-info("info.typst-compiling", src=MAIN_TYP, dst=raw_pdf_path)
-typst_cmd = ["typst", "compile", str(MAIN_TYP), str(raw_pdf_path)]
-
-if pdf_standard is not None:
+if output_format == "png":
+    typst_cmd += ["--format", "png", "--ppi", str(build.get("png-ppi", 300))]
+elif pdf_standard:
     typst_cmd += ["--pdf-standard", pdf_standard]
 
 pages = mode_config.get("pages")
@@ -156,6 +176,10 @@ if result.returncode != 0:
     raise SystemExit(error("errors.typst-failed"))
 succes("info.typst-done")
 
+if output_format == "png":
+    info("info.png-exported", path=png_path)
+    raise SystemExit(0)
+
 pdf_standard_label = pdf_version_raw or "—"
 info("info.icc-using", icc=icc_name, mode=mode, standard=pdf_standard_label)
 
@@ -167,10 +191,20 @@ raw_info = pdf_info(raw_pdf_path)
 shutil.copy2(raw_pdf_path, pdf_path)
 with pikepdf.open(pdf_path, allow_overwriting_input=True) as pdf:
     if color_conversion:
-        n = convert_images(pdf, icc_data, channels)
-        info("info.cc-converted", n=n)
+        converted, skipped = convert_images(pdf, icc_data, channels)
+        info("info.cc-converted", n=converted)
+        if skipped:
+            warn("warnings.cc-skipped", n=skipped)
 
-    apply_output_intent(pdf, icc_data, channels, icc_name)
+    apply_output_intent(
+        pdf,
+        icc_data,
+        channels,
+        output_condition_identifier,
+        output_condition=output_condition,
+        registry_name=output_registry,
+        is_pdfa=is_pdfa,
+    )
     write_pdf_metadata(
         pdf,
         book,
@@ -179,21 +213,20 @@ with pikepdf.open(pdf_path, allow_overwriting_input=True) as pdf:
         version,
         copyright,
         author,
-        _authors,
     )
     pdf.save(pdf_path)
 
 info("info.icc-applied", path=pdf_path)
 
-if verify_pdf_ua:
+for standard in post_validation_standards:
     try:
-        validate_pdf_ua(pdf_path)
+        validate_pdf(pdf_path, standard)
     except VeraPdfUnavailable:
         raise SystemExit(error("errors.verapdf-not-found"))
     except VeraPdfError as exc:
         print(exc, file=sys.stderr)
         raise SystemExit(error("errors.verapdf-failed"))
-    succes("info.verapdf-passed", path=pdf_path)
+    succes("info.verapdf-passed", standard=standard, path=pdf_path)
 
 if build.get("open-after-build", False):
     CREATE_BREAKAWAY_FROM_JOB = 0x01000000

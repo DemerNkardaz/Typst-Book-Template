@@ -38,7 +38,9 @@ def write_log(
         icc = info.get("OutputIntent")
         if isinstance(icc, dict):
             lines += [
-                f"icc profile:  {icc.get('OutputConditionIdentifier')}",
+                f"icc intent id:{icc.get('OutputConditionIdentifier')}",
+                f"icc condition:{icc.get('OutputCondition', '—')}",
+                f"icc registry: {icc.get('RegistryName', '—')}",
                 f"icc space:    {icc.get('color_space', '—')}",
                 f"icc size:     {fmt_size(icc.get('size_bytes'))}",
             ]

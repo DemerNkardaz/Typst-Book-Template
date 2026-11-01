@@ -55,6 +55,10 @@ def pdf_info(path: Path) -> dict[str, object]:
             icc_info: dict[str, object] = {
                 "OutputConditionIdentifier": str(intent.get("/OutputConditionIdentifier")),
             }
+            for key in ("/OutputCondition", "/RegistryName"):
+                value = intent.get(key)
+                if value:
+                    icc_info[key.lstrip("/")] = str(value)
             profile = intent.get("/DestOutputProfile")
             if profile:
                 data = bytes(profile.read_bytes())
@@ -77,15 +81,24 @@ def apply_output_intent(
     pdf: pikepdf.Pdf,
     icc_data: bytes,
     channels: int,
-    icc_name: str,
+    output_condition_identifier: str,
+    *,
+    output_condition: str | None = None,
+    registry_name: str | None = None,
+    is_pdfa: bool = False,
 ) -> None:
     icc_stream = Stream(pdf, icc_data)
     icc_stream["/N"] = channels
 
     output_intent = Dictionary(
         Type=Name("/OutputIntent"),
-        OutputConditionIdentifier=pikepdf.String(icc_name),
+        S=Name("/GTS_PDFA1" if is_pdfa else "/GTS_PDFX"),
+        OutputConditionIdentifier=pikepdf.String(output_condition_identifier),
         DestOutputProfile=icc_stream,
     )
+    if output_condition is not None:
+        output_intent["/OutputCondition"] = pikepdf.String(output_condition)
+    if registry_name is not None:
+        output_intent["/RegistryName"] = pikepdf.String(registry_name)
 
     pdf.Root["/OutputIntents"] = Array([pdf.make_indirect(output_intent)])

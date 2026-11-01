@@ -13,7 +13,27 @@ class VeraPdfError(Exception):
     pass
 
 
-def validate_pdf_ua(pdf_path: Path) -> None:
+VERAPDF_FLAVORS = {
+    "PDF/A-1b": "1b",
+    "PDF/A-1a": "1a",
+    "PDF/A-2b": "2b",
+    "PDF/A-2u": "2u",
+    "PDF/A-2a": "2a",
+    "PDF/A-3b": "3b",
+    "PDF/A-3u": "3u",
+    "PDF/A-3a": "3a",
+    "PDF/A-4": "4",
+    "PDF/A-4f": "4f",
+    "PDF/A-4e": "4e",
+    "PDF/UA-1": "ua1",
+}
+
+
+def validate_pdf(pdf_path: Path, standard: str) -> None:
+    flavor = VERAPDF_FLAVORS.get(standard)
+    if flavor is None:
+        raise ValueError(f"Unsupported veraPDF standard: {standard}")
+
     executable = shutil.which("verapdf") or shutil.which("verapdf.bat")
     if executable is None:
         raise VeraPdfUnavailable
@@ -21,7 +41,7 @@ def validate_pdf_ua(pdf_path: Path) -> None:
     command = [
         executable,
         "-f",
-        "ua1",
+        flavor,
         "--format",
         "xml",
         str(pdf_path),
@@ -72,5 +92,5 @@ def validate_pdf_ua(pdf_path: Path) -> None:
             clause = rule.get("clause")
             details.append(f"{clause}: {description}" if clause else description)
         summary = "\n".join(detail for detail in details if detail)
-        message = "The final PDF is not compliant with PDF/UA-1"
+        message = f"The final PDF is not compliant with {standard}"
         raise VeraPdfError(f"{message}\n{summary}" if summary else message)

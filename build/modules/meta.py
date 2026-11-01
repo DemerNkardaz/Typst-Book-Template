@@ -6,7 +6,6 @@ def write_pdf_metadata(
     version: dict[str, object],
     copyright: dict[str, object],
     author: dict[str, object],
-    authors: object,
 ) -> None:
     with pdf.open_metadata() as meta:
         def m(key: str, val: object) -> None:
@@ -34,12 +33,3 @@ def write_pdf_metadata(
         m("xmp:Nickname", book.get("title-short"))
         m("photoshop:AuthorsPosition", author.get("position"))
         m("photoshop:CaptionWriter", author.get("description-author"))
-
-        all_authors = authors if isinstance(authors, list) else [authors]
-        author_names = [
-            a["name"]
-            for a in all_authors
-            if isinstance(a, dict) and isinstance(a.get("name"), str)
-        ]
-        if author_names:
-            meta["dc:creator"] = author_names

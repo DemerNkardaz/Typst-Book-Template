@@ -7,17 +7,19 @@ en:
     assets-saved:       "[assets] ✅ saved -> {name}"
     typst-compiling:    "[typst]  ⚙️  compiling {src} -> {dst}"
     typst-done:         "[typst]  ✅ done"
+    png-exported:       "[typst]  🖼️  PNG pages exported -> {path}"
     icc-using:          "[ICC]    🎨 using {icc} (mode: {mode}, standard: {standard})"
     icc-applied:        "[ICC]    🎨 applied -> {path}"
     cc-converted:       "[cc]     🖼️  images converted: {n}"
     log-written:        "[log]    📝 {path}"
-    verapdf-passed:     "[veraPDF] ✅ PDF/UA-1 validation passed: {path}"
+    verapdf-passed:     "[veraPDF] ✅ {standard} validation passed: {path}"
   warnings:
     status-draft:       "[status] ⚠️  Attention: project is being built with status “Draft”"
+    cc-skipped:         "[cc]     ⚠️  skipped images without safe color conversion: {n}"
   errors:
     typst-failed:       "[typst]  ❌ typst failed to compile"
-    verapdf-not-found:  "[veraPDF] ❌ PDF/UA-1 mode requires veraPDF CLI in PATH"
-    verapdf-failed:     "[veraPDF] ❌ PDF/UA-1 validation failed"
+    verapdf-not-found:  "[veraPDF] ❌ PDF/A and PDF/UA validation requires veraPDF CLI in PATH"
+    verapdf-failed:     "[veraPDF] ❌ final PDF failed standard validation"
 
 ru:
   info:
@@ -27,14 +29,16 @@ ru:
     assets-saved:       "[ассеты] ✅ сохранён -> {name}"
     typst-compiling:    "[typst]  ⚙️  компиляция {src} -> {dst}"
     typst-done:         "[typst]  ✅ готово"
+    png-exported:       "[typst]  🖼️  PNG-страницы экспортированы -> {path}"
     icc-using:          "[ICC]    🎨 используется {icc} (режим: {mode}, стандарт: {standard})"
     icc-applied:        "[ICC]    🎨 применён -> {path}"
     cc-converted:       "[cc]     🖼️  конвертировано изображений: {n}"
     log-written:        "[log]    📝 {path}"
-    verapdf-passed:     "[veraPDF] ✅ проверка PDF/UA-1 пройдена: {path}"
+    verapdf-passed:     "[veraPDF] ✅ проверка {standard} пройдена: {path}"
   warnings:
     status-draft:       "[статус] ⚠️  Обратите внимание: собирается проект со статусом «Черновик»"
+    cc-skipped:         "[cc]     ⚠️  изображения пропущены: для них нет безопасного преобразования цвета ({n})"
   errors:
     typst-failed:       "[typst]  ❌ typst не смог скомпилировать проект"
-    verapdf-not-found:  "[veraPDF] ❌ для режима PDF/UA-1 требуется veraPDF CLI в PATH"
-    verapdf-failed:     "[veraPDF] ❌ итоговый PDF не прошёл проверку PDF/UA-1"
+    verapdf-not-found:  "[veraPDF] ❌ для проверки PDF/A и PDF/UA требуется veraPDF CLI в PATH"
+    verapdf-failed:     "[veraPDF] ❌ итоговый PDF не прошёл проверку стандарта"

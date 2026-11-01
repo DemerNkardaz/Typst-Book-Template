@@ -10,7 +10,6 @@ meta:
 
 actions:
   pre:
-    - cmd: echo "hello world"
   post:
     - cmd: git init --initial-branch=main
     - cmd: code "{project_path}"

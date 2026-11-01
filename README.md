@@ -20,6 +20,8 @@ yal new book
 
 2. Build modes (defined in `settings/build.yml`) control the target ICC profile, PDF standard, pages to export and other per-mode options.
 
+PNG export uses Typst’s native renderer and the configured `png-ppi`. PDF-only post-processing (ICC image conversion, OutputIntent, PDF metadata and validation) does not apply to PNG.
+
 3. The Typst source tree (`main.typ`, `book/`, `code/`) contains the document structure and reusable components. Edit these sources to change the book content and layout.
 
 ## Requirements
@@ -36,7 +38,7 @@ pip install pikepdf Pillow PyYAML
 - System tools required by Python packages:
 	- `qpdf` is required by `pikepdf` (install via your package manager or from https://qpdf.sourceforge.io/).
 	- On some systems, Pillow's ImageCms may require Little CMS (`lcms2`) development libraries. If image color conversion fails, install or enable Little CMS.
-	- The `accessible` build mode also requires [veraPDF CLI](https://verapdf.org/) in `PATH`. It validates the final PDF after pikepdf post-processing.
+	- Any build mode with a PDF/A or PDF/UA value in `pdf-validator` also requires [veraPDF CLI](https://verapdf.org/) in `PATH`. It validates the final PDF after pikepdf post-processing.
 
 ## Repository structure
 
@@ -73,6 +75,9 @@ python build/build.py --mode print
 
 # export and validate an accessible PDF/UA-1 file
 python build/build.py --mode accessible
+
+# export PNG pages at settings/build.yml's png-ppi
+python build/build.py --mode print --as png
 ```
 
 Or with using Makefile/YAL:
@@ -91,7 +96,8 @@ yal make --mode print
 
 Notes:
 - The build script calls `typst compile main.typ main.pdf` and may pass `--pages` or `--pdf-standard` according to the selected mode.
-- After compilation the script uses `pikepdf` to attach an OutputIntent (ICC profile) and write PDF metadata. If `settings/build.yml` enables `color-conversion`, embedded images are converted to the target color space.
+- PNG export passes `--format png` and `--ppi` to Typst, writing one image per page with a page-number template.
+- After compilation the script uses `pikepdf` to attach the configured OutputIntent (ICC profile, output-condition identifier and registry) and write PDF metadata. If `settings/build.yml` enables `color-conversion`, supported embedded raster images are converted without lossy JPEG re-encoding; unsupported or masked images remain unchanged and are reported.
 - The script writes a log to `build/build.log`.
 
 ## Working on the content
