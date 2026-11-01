@@ -14,7 +14,7 @@
 		stack(
 			dir: ttb,
 			spacing: 1em,
-			image(meta.get-asset(logo-name), width: logo-width),
+      pdf.artifact(image(meta.get-asset(logo-name), width: logo-width)),
       v(space-after-logo),
 
       ..entries.map(entry => {

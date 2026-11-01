@@ -73,7 +73,7 @@ $defs:
 
       pdf-validator:
         type: [string, "null"]
-        description: "The name of the PDF validator to use. If not provided, no validation is performed."
+        description: "Additional PDF standard to validate during compilation. PDF/UA-1 also triggers veraPDF validation after post-processing."
         enum:
           - "PDF/A-1b"
           - "PDF/A-1a"

@@ -17,15 +17,27 @@
 #show: hyphenation.apply
 #show: typography.apply
 
+#let document-date = if (
+	meta.date("year") != none and
+	meta.date("month") != none and
+	meta.date("day") != none
+) {
+	datetime(
+		year: meta.date("year"),
+		month: meta.date("month"),
+		day: meta.date("day"),
+	)
+} else {
+	auto
+}
+
 #set document(
 	title: meta.book(
 		"title",
 		fallback: locale.get("fallback.title")
 	),
-	author: meta.author(
-		"name",
-		fallback: locale.get("fallback.author")
-	),
+	author: meta.get-authors().map(author => author.at("name")),
+	date: document-date,
 	description: meta.book(
 		"description",
 		fallback: ""
@@ -46,7 +58,7 @@
 #chapter.title()
 #chapter.frontmatter()
 
-= #title() <start_count>
+#metadata(none) <start_count>
 
 #line(length: 100%)
 

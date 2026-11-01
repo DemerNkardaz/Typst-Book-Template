@@ -11,10 +11,13 @@ en:
     icc-applied:        "[ICC]    🎨 applied -> {path}"
     cc-converted:       "[cc]     🖼️  images converted: {n}"
     log-written:        "[log]    📝 {path}"
+    verapdf-passed:     "[veraPDF] ✅ PDF/UA-1 validation passed: {path}"
   warnings:
     status-draft:       "[status] ⚠️  Attention: project is being built with status “Draft”"
   errors:
     typst-failed:       "[typst]  ❌ typst failed to compile"
+    verapdf-not-found:  "[veraPDF] ❌ PDF/UA-1 mode requires veraPDF CLI in PATH"
+    verapdf-failed:     "[veraPDF] ❌ PDF/UA-1 validation failed"
 
 ru:
   info:
@@ -28,7 +31,10 @@ ru:
     icc-applied:        "[ICC]    🎨 применён -> {path}"
     cc-converted:       "[cc]     🖼️  конвертировано изображений: {n}"
     log-written:        "[log]    📝 {path}"
+    verapdf-passed:     "[veraPDF] ✅ проверка PDF/UA-1 пройдена: {path}"
   warnings:
     status-draft:       "[статус] ⚠️  Обратите внимание: собирается проект со статусом «Черновик»"
   errors:
     typst-failed:       "[typst]  ❌ typst не смог скомпилировать проект"
+    verapdf-not-found:  "[veraPDF] ❌ для режима PDF/UA-1 требуется veraPDF CLI в PATH"
+    verapdf-failed:     "[veraPDF] ❌ итоговый PDF не прошёл проверку PDF/UA-1"

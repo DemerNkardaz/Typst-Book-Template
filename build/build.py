@@ -12,6 +12,7 @@ from modules.icc import apply_output_intent, get_color_channels, pdf_info
 from modules.image_process import convert_images
 from modules.log import write_log
 from modules.meta import write_pdf_metadata
+from modules.pdf_validation import VeraPdfError, VeraPdfUnavailable, validate_pdf_ua
 from modules.i18n import error, info, succes, warn
 
 parser = argparse.ArgumentParser()
@@ -75,6 +76,10 @@ icc_name = mode_config["ICC"]
 pdf_version_raw = mode_config.get("pdf-version")
 pdf_validator_raw = mode_config.get("pdf-validator")
 color_conversion = bool(build.get("color-conversion", False))
+pdf_validator_values = (
+    pdf_validator_raw if isinstance(pdf_validator_raw, list) else [pdf_validator_raw]
+)
+verify_pdf_ua = "PDF/UA-1" in pdf_validator_values
 
 pdf_version_to_standard = {
     "PDF 1.4": "1.4",
@@ -179,6 +184,16 @@ with pikepdf.open(pdf_path, allow_overwriting_input=True) as pdf:
     pdf.save(pdf_path)
 
 info("info.icc-applied", path=pdf_path)
+
+if verify_pdf_ua:
+    try:
+        validate_pdf_ua(pdf_path)
+    except VeraPdfUnavailable:
+        raise SystemExit(error("errors.verapdf-not-found"))
+    except VeraPdfError as exc:
+        print(exc, file=sys.stderr)
+        raise SystemExit(error("errors.verapdf-failed"))
+    succes("info.verapdf-passed", path=pdf_path)
 
 if build.get("open-after-build", False):
     CREATE_BREAKAWAY_FROM_JOB = 0x01000000

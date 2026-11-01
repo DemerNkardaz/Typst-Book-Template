@@ -14,3 +14,8 @@ mode-print:
   pdf-version: PDF 2.0
   pdf-validator: ~
   pages: ~
+mode-accessible:
+  ICC: sRGB_v4_ICC_preference_displayclass
+  pdf-version: PDF 1.7
+  pdf-validator: PDF/UA-1
+  pages: ~

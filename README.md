@@ -36,6 +36,7 @@ pip install pikepdf Pillow PyYAML
 - System tools required by Python packages:
 	- `qpdf` is required by `pikepdf` (install via your package manager or from https://qpdf.sourceforge.io/).
 	- On some systems, Pillow's ImageCms may require Little CMS (`lcms2`) development libraries. If image color conversion fails, install or enable Little CMS.
+	- The `accessible` build mode also requires [veraPDF CLI](https://verapdf.org/) in `PATH`. It validates the final PDF after pikepdf post-processing.
 
 ## Repository structure
 
@@ -69,6 +70,9 @@ python build/build.py
 
 # specify a mode (modes are defined in settings/build.yml)
 python build/build.py --mode print
+
+# export and validate an accessible PDF/UA-1 file
+python build/build.py --mode accessible
 ```
 
 Or with using Makefile/YAL:
