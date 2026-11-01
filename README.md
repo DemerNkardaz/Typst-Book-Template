@@ -25,7 +25,7 @@ yal new book
 ## Requirements
 
 - Typst (the `typst` CLI) must be installed and available in `PATH`.
-- Python 3.8+.
+- Python 3.9+.
 - Python packages: `pikepdf`, `Pillow`, `PyYAML`.
 	- Install quickly with:
 

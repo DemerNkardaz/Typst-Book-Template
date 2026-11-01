@@ -57,7 +57,9 @@
   }
 
   for target in target-list {
-    if target == "par" {
+    if target == "page" {
+      body = apply-page(body)
+    } else if target == "par" {
       body = apply-par(body)
     } else if target == "text" {
       body = apply-text(body)

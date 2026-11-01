@@ -6,6 +6,7 @@ meta:
     - README.md
     - LICENSE
     - TODO.md
+    - AI_COMMENTS.md
 
 actions:
   pre:

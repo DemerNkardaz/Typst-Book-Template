@@ -55,11 +55,42 @@
   return _parse-deep(value)
 }
 
+#let _get-margin(section: _mode) = {
+  let profile = _data.at(section, default: _data.default)
+  let profile-margin = profile.at("page", default: (:)).at("margin", default: none)
+  let default-margin = _data.default.at("page").at("margin", default: none)
+
+  if profile-margin == none {
+    return _parse-deep(default-margin)
+  }
+
+  let parsed-profile = _parse-deep(profile-margin)
+  if type(parsed-profile) != dictionary {
+    return parsed-profile
+  }
+
+  let parsed-default = _parse-deep(default-margin)
+  let result = if type(parsed-default) == dictionary {
+    parsed-default
+  } else if parsed-default != none {
+    (rest: parsed-default)
+  } else {
+    (:)
+  }
+
+  for (key, value) in parsed-profile.pairs() {
+    result.insert(key, value)
+  }
+
+  result
+}
+
 #let init(body) = {
   let page-paper = get("page.paper")
   let page-size = get("page.size")
   let page-width = get("page.width")
   let page-height = get("page.height")
+  let page-margin = _get-margin()
 	let page-bleed = get("page.bleed")
 
   if page-width == none {
@@ -84,12 +115,7 @@
 
   set page(
     ..page-params,
-    margin: (
-      top: get("page.margin.top"),
-      bottom: get("page.margin.bottom"),
-      inside: get("page.margin.inside"),
-      outside: get("page.margin.outside"),
-    ),
+    margin: page-margin,
   )
 
 	set page(

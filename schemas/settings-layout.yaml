@@ -89,9 +89,10 @@ $defs:
         description: >
           Page margins. “auto” (2.5/21 of the smaller page dimension),
           a single length for all sides, or an object with individual sides.
-          Omitted keys fall back to the previously set value (or auto).
-          A margin object in a profile replaces the one from “default”
-          entirely, it is not merged with it.
+          In a named profile, an object overrides matching keys from the
+          default profile. If the default is a single length, it supplies the
+          fallback for sides omitted by that object. A single length in a
+          named profile replaces the default margin value entirely.
         oneOf:
           - type: string
             description: “auto” or a single length, e.g. “21mm”.
