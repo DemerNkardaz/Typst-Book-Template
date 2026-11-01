@@ -1,25 +1,28 @@
 # yaml-language-server: $schema=../schemas/style-text-schema.yaml
-font: Playfair Display
-size: 10pt
-hyphenate: auto
-overhang: true
-ligatures: true
-costs:
-  hyphenation: 40%
-  runt: 100%
-  widow: 200%
-  orphan: 200%
-historical-ligatures: true
-kerning: true
-number-type: lining
-number-width: tabular
-top-edge: x-height
-bottom-edge: baseline
-variations:
-  opsz: 10
-  wght: 400
-  wdth: 100
-  slnt: 0
-  ital: 0
+default:
+  font: Playfair Display
+  size: 10pt
+  hyphenate: auto
+  overhang: true
+  ligatures: true
+  costs:
+    hyphenation: 40%
+    runt: 100%
+    widow: 200%
+    orphan: 200%
+  historical-ligatures: true
+  kerning: true
+  number-type: lining
+  number-width: tabular
+  top-edge: x-height
+  bottom-edge: baseline
+  variations:
+    opsz: 10
+    wght: 400
+    wdth: 100
+    slnt: 0
+    ital: 0
+  fill: rgb(13, 13, 13)
 
-fill: cmyk(0%, 0%, 0%, 95%)
+print:
+  fill: cmyk(0%, 0%, 0%, 95%)

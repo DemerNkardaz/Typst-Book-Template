@@ -2,49 +2,78 @@
 # prettier-ignore
 $schema: ./draft_2020-12/schema.json
 title: Typst Paragraph Configuration
+
 type: object
-additionalProperties: false
+propertyNames:
+  description: Name of the property or mode.
+  pattern: ^[a-z][a-z0-9_-]*$
 
 properties:
   leading:
-    description: The vertical space between lines of text.
-    type: string
-    pattern: ^[0-9]+(\.[0-9]+)?(pt|em|cm|mm|in)$
-
+    $ref: "#/$defs/style/properties/leading"
   spacing:
-    description: The spacing between paragraphs.
-    type: string
-    pattern: ^[0-9]+(\.[0-9]+)?(pt|em|cm|mm|in|%)$
-
+    $ref: "#/$defs/style/properties/spacing"
   justify:
-    description: Whether the paragraph should be justified.
-    type: boolean
-
+    $ref: "#/$defs/style/properties/justify"
   justification-limits:
-    description: How much the spacing between words and characters may be adjusted during justification.
-    type: object
-
+    $ref: "#/$defs/style/properties/justification-limits"
   linebreaks:
-    description: How to determine line breaks.
-    oneOf:
-      - type: string
-        enum: [auto, simple, optimized]
-      - type: object
-
+    $ref: "#/$defs/style/properties/linebreaks"
   first-line-indent:
-    description: The indent the first line of a paragraph should have.
-    oneOf:
-      - type: string
-        pattern: ^[0-9]+(\.[0-9]+)?(pt|em|cm|mm|in)$
-      - type: object
-
+    $ref: "#/$defs/style/properties/first-line-indent"
   hanging-indent:
-    description: The indent that all but the first line of a paragraph should have.
-    type: string
-    pattern: ^[0-9]+(\.[0-9]+)?(pt|em|cm|mm|in)$
-
+    $ref: "#/$defs/style/properties/hanging-indent"
   body:
-    description: The content of the paragraph.
-    oneOf:
-      - type: string
-      - type: object
+    $ref: "#/$defs/style/properties/body"
+
+additionalProperties:
+  $ref: "#/$defs/style"
+
+$defs:
+  style:
+    description: Набор свойств. Используется и для плоской записи, и внутри режима.
+    type: object
+    additionalProperties: false
+    properties:
+      leading:
+        description: The vertical space between lines of text.
+        type: string
+        pattern: ^[0-9]+(\.[0-9]+)?(pt|em|cm|mm|in)$
+
+      spacing:
+        description: The spacing between paragraphs.
+        type: string
+        pattern: ^[0-9]+(\.[0-9]+)?(pt|em|cm|mm|in|%)$
+
+      justify:
+        description: Whether the paragraph should be justified.
+        type: boolean
+
+      justification-limits:
+        description: How much the spacing between words and characters may be adjusted during justification.
+        type: object
+
+      linebreaks:
+        description: How to determine line breaks.
+        oneOf:
+          - type: string
+            enum: [auto, simple, optimized]
+          - type: object
+
+      first-line-indent:
+        description: The indent the first line of a paragraph should have.
+        oneOf:
+          - type: string
+            pattern: ^[0-9]+(\.[0-9]+)?(pt|em|cm|mm|in)$
+          - type: object
+
+      hanging-indent:
+        description: The indent that all but the first line of a paragraph should have.
+        type: string
+        pattern: ^[0-9]+(\.[0-9]+)?(pt|em|cm|mm|in)$
+
+      body:
+        description: The content of the paragraph.
+        oneOf:
+          - type: string
+          - type: object

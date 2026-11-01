@@ -1,4 +1,7 @@
 # yaml-language-server: $schema=../../schemas/style-text-schema.yaml
-size: 12pt
+default:
+  size: 12pt
+  fill: rgb(230, 64, 255)
 
-fill: cmyk(10%, 75%, 0%, 0%)
+print:
+  fill: cmyk(10%, 75%, 0%, 0%)

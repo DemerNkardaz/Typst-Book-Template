@@ -5,8 +5,52 @@ title: Typst Page Style Configuration
 description: >
   Page appearance. Page geometry (paper, width, height, margin, bleed)
   is set in settings/layout.yml and is forbidden here.
+
 type: object
-additionalProperties: false
+propertyNames:
+  description: Name of the property or mode.
+  pattern: ^[a-z][a-z0-9_-]*$
+
+properties:
+  paper:
+    $ref: "#/$defs/style/properties/paper"
+  width:
+    $ref: "#/$defs/style/properties/width"
+  height:
+    $ref: "#/$defs/style/properties/height"
+  margin:
+    $ref: "#/$defs/style/properties/margin"
+  bleed:
+    $ref: "#/$defs/style/properties/bleed"
+  flipped:
+    $ref: "#/$defs/style/properties/flipped"
+  binding:
+    $ref: "#/$defs/style/properties/binding"
+  columns:
+    $ref: "#/$defs/style/properties/columns"
+  fill:
+    $ref: "#/$defs/style/properties/fill"
+  numbering:
+    $ref: "#/$defs/style/properties/numbering"
+  supplement:
+    $ref: "#/$defs/style/properties/supplement"
+  number-align:
+    $ref: "#/$defs/style/properties/number-align"
+  header:
+    $ref: "#/$defs/style/properties/header"
+  header-ascent:
+    $ref: "#/$defs/style/properties/header-ascent"
+  footer:
+    $ref: "#/$defs/style/properties/footer"
+  footer-descent:
+    $ref: "#/$defs/style/properties/footer-descent"
+  background:
+    $ref: "#/$defs/style/properties/background"
+  foreground:
+    $ref: "#/$defs/style/properties/foreground"
+
+additionalProperties:
+  $ref: "#/$defs/style"
 
 $defs:
   forbidden:
@@ -19,97 +63,101 @@ $defs:
     description: Relative length, e.g. “6mm”, “30%”, “30% + 2pt”.
     pattern: ^-?[0-9]+(\.[0-9]+)?(pt|em|cm|mm|in|%)(\s*[+-]\s*-?[0-9]+(\.[0-9]+)?(pt|em|cm|mm|in|%))*$
 
-properties:
-  # --- Forbidden: geometry lives in settings/layout.yml ---
-  paper:
-    $ref: "#/$defs/forbidden"
-  width:
-    $ref: "#/$defs/forbidden"
-  height:
-    $ref: "#/$defs/forbidden"
-  margin:
-    $ref: "#/$defs/forbidden"
-  bleed:
-    $ref: "#/$defs/forbidden"
+  style:
+    description: Набор свойств. Используется и для плоской записи, и внутри режима.
+    type: object
+    additionalProperties: false
+    properties:
+      # --- Forbidden: geometry lives in settings/layout.yml ---
+      paper:
+        $ref: "#/$defs/forbidden"
+      width:
+        $ref: "#/$defs/forbidden"
+      height:
+        $ref: "#/$defs/forbidden"
+      margin:
+        $ref: "#/$defs/forbidden"
+      bleed:
+        $ref: "#/$defs/forbidden"
 
-  # --- Allowed ---
-  flipped:
-    description: Whether the page is flipped into landscape orientation.
-    type: boolean
+      # --- Allowed ---
+      flipped:
+        description: Whether the page is flipped into landscape orientation.
+        type: boolean
 
-  binding:
-    description: On which side the pages will be bound. Affects the meaning of inside/outside margins.
-    type: string
-    enum: [auto, left, right]
+      binding:
+        description: On which side the pages will be bound. Affects the meaning of inside/outside margins.
+        type: string
+        enum: [auto, left, right]
 
-  columns:
-    description: How many columns the page has.
-    type: integer
-    minimum: 1
+      columns:
+        description: How many columns the page has.
+        type: integer
+        minimum: 1
 
-  fill:
-    description: The page's background fill (none, auto, color, gradient or tiling).
-    oneOf:
-      - type: string
-      - type: object # Complex gradient / tiling structures
+      fill:
+        description: The page's background fill (none, auto, color, gradient or tiling).
+        oneOf:
+          - type: string
+          - type: object # Complex gradient / tiling structures
 
-  numbering:
-    description: How to number the pages. A numbering pattern such as “1” or “i”, or none.
-    type: string
+      numbering:
+        description: How to number the pages. A numbering pattern such as “1” or “i”, or none.
+        type: string
 
-  supplement:
-    description: A supplement for the pages, added before the page number in references.
-    oneOf:
-      - type: string
-        enum: [none, auto]
-      - type: string
-      - type: object
+      supplement:
+        description: A supplement for the pages, added before the page number in references.
+        oneOf:
+          - type: string
+            enum: [none, auto]
+          - type: string
+          - type: object
 
-  number-align:
-    description: >
-      The alignment of the page numbering, e.g. “center + bottom”.
-      If the vertical component is top, the numbering goes into the header,
-      if bottom, into the footer. Horizon is forbidden.
-    type: string
-    not:
-      pattern: horizon
+      number-align:
+        description: >
+          The alignment of the page numbering, e.g. “center + bottom”.
+          If the vertical component is top, the numbering goes into the header,
+          if bottom, into the footer. Horizon is forbidden.
+        type: string
+        not:
+          pattern: horizon
 
-  header:
-    description: The page's header. none suppresses it, auto shows the page number if number-align is top.
-    oneOf:
-      - type: string
-        enum: [none, auto]
-      - type: string
-      - type: object
+      header:
+        description: The page's header. none suppresses it, auto shows the page number if number-align is top.
+        oneOf:
+          - type: string
+            enum: [none, auto]
+          - type: string
+          - type: object
 
-  header-ascent:
-    description: The amount the header is raised into the top margin. Ratios are relative to the top margin.
-    $ref: "#/$defs/relative-length"
+      header-ascent:
+        description: The amount the header is raised into the top margin. Ratios are relative to the top margin.
+        $ref: "#/$defs/relative-length"
 
-  footer:
-    description: The page's footer. none suppresses it, auto shows the page number if number-align is bottom.
-    oneOf:
-      - type: string
-        enum: [none, auto]
-      - type: string
-      - type: object
+      footer:
+        description: The page's footer. none suppresses it, auto shows the page number if number-align is bottom.
+        oneOf:
+          - type: string
+            enum: [none, auto]
+          - type: string
+          - type: object
 
-  footer-descent:
-    description: The amount the footer is lowered into the bottom margin. Ratios are relative to the bottom margin.
-    $ref: "#/$defs/relative-length"
+      footer-descent:
+        description: The amount the footer is lowered into the bottom margin. Ratios are relative to the bottom margin.
+        $ref: "#/$defs/relative-length"
 
-  background:
-    description: Content in the page's background. Relative lengths resolve against the page size including bleed.
-    oneOf:
-      - type: string
-        enum: [none]
-      - type: string
-      - type: object
+      background:
+        description: Content in the page's background. Relative lengths resolve against the page size including bleed.
+        oneOf:
+          - type: string
+            enum: [none]
+          - type: string
+          - type: object
 
-  foreground:
-    description: Content in the page's foreground. Relative lengths resolve against the page size including bleed.
-    oneOf:
-      - type: string
-        enum: [none]
-      - type: string
-      - type: object
+      foreground:
+        description: Content in the page's foreground. Relative lengths resolve against the page size including bleed.
+        oneOf:
+          - type: string
+            enum: [none]
+          - type: string
+          - type: object

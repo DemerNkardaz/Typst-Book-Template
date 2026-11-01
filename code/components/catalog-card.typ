@@ -1,4 +1,5 @@
 #import "../utils/lib.typ": parse-value
+#import "../plugin/style/main.typ" as style
 
 ────────────────────────────────────────────────────────
 
@@ -72,22 +73,10 @@
   let par-name  = use-style.at("paragraph", default: none)
   let text-name = use-style.at("text",      default: none)
   if text-name != none {
-    let text-path = if text-name == "" {
-      "../../style/text.yml"
-    } else {
-      "../../style/text/" + text-name + ".yml"
-    }
-    let td = _parse-dict(yaml(text-path))
-    body = { set text(..td); body }
+    body = style.use-text(name: text-name, body)
   }
   if par-name != none {
-    let par-path = if par-name == "" {
-      "../../style/paragraph.yml"
-    } else {
-      "../../style/paragraph/" + par-name + ".yml"
-    }
-    let pd = _parse-dict(yaml(par-path))
-    body = { set par(..pd); body }
+    body = style.use-par(name: par-name, body)
   }
   body
 }
@@ -266,23 +255,11 @@
   }
 
   if text-name != none {
-    let text-path = if text-name == "" {
-      "../../style/text.yml"
-    } else {
-      "../../style/text/" + text-name + ".yml"
-    }
-    let td = _parse-dict(yaml(text-path))
-    inner = { set text(..td); inner }
+    inner = style.use-text(name: text-name, inner)
   }
 
   if par-name != none {
-    let par-path = if par-name == "" {
-      "../../style/paragraph.yml"
-    } else {
-      "../../style/paragraph/" + par-name + ".yml"
-    }
-    let pd = _parse-dict(yaml(par-path))
-    inner = { set par(..pd); inner }
+    inner = style.use-par(name: par-name, inner)
   }
 
 	let result = box(..rect-props, inner)
